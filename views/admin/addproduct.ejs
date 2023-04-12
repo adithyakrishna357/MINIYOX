@@ -1,0 +1,89 @@
+<main class="main-wrap">
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Add Product</h2>
+                <p>Add, edit or delete a category</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3" style="width: 601px;">
+                        <form action="/admin/addproduct" method="post" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Product Name</label>
+                                <input type="text" placeholder="Type here" name="product_name" class="form-control"
+                                    id="product_name" />
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_slug" class="form-label">Description</label>
+                                <input type="text" placeholder="Type here" name="product_description"
+                                    class="form-control" id="product_slug" />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="product_category">
+                                    <!-- <option>Select a Category</option> -->
+                                    <% for (var i=0; i < categorys.length; i++) { %>
+                                        <% if (categorys[i].categorystatus) { %>
+                                            <option>
+                                                <%= categorys[i].category_list %>
+                                            </option>
+                                            <% } %>
+                                                <% } %>
+                                </select>
+
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Price</label>
+                                <input type="number" placeholder="Type here" class="form-control" name="product_price">
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" type="submit">Submit</button>
+                            </div>
+                    </div>
+                    <div class="col-md-9" style="width: 300px; margin-left: 115px;margin-top: 84px;">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Product Image</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <input class="form-control" type="file" name="image"
+                                        accept="image/jpeg,image/png" onchange="previewImage(event)" />
+                                    <img class="preview" style="width: 300px; height: inherit" />
+                                    <input class="form-control" type="file" name="image"
+                                        accept="image/jpeg,image/png" onchange="previewImage(event)" />
+                                    <img class="preview" style="width: 300px; height: inherit" />
+                                    <input class="form-control" type="file" name="image"
+                                        accept="image/jpeg,image/png" onchange="previewImage(event)" />
+                                    <img class="preview" style="width: 300px; height: inherit" />
+                                    
+                                </div>
+                            </div>
+                        </div> <!-- card end// -->
+                    </div> <!-- .col// -->
+                    </form>
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+</main>
+<script>
+    function previewImage(event) {
+        var input = event.target;
+
+        var preview = input.nextElementSibling;
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                preview.src = reader.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

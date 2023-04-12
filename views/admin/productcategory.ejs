@@ -1,0 +1,162 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css"
+    integrity="sha512-tlEAlF6T11i6aTpU6rNCnMxRvI7X9B1Fg/7TWG3q+lIAn7yQhAXYnxb7qfgEGqEa70gX2Q5mb5e5hWdPvC65Rw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<main class="main-wrap">
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Categories </h2>
+            </div>
+            <div style="padding-left: 575px;">
+                <input type="text" placeholder="Search Categories" class="form-control bg-white">
+            </div>
+            <!-- Button trigger modal -->
+            <div class="">
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Add Category
+                </button>
+            </div>
+            <!-- Modal -->
+
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row" style="width: 1522px;">
+                    <div class="col-md-9">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" />
+                                            </div>
+                                        </th>
+                                        <th>Index</th>
+                                        <th>Category Name</th>
+                                        <th style="padding-left:73px;">List/Unlist</th>
+                                        <th style="padding-left: 88px;">Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for (var i=0; i < categories.length; i++) { %>
+                                        <tr>
+                                            <td class="text-center">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <%= i+1 %>
+                                            </td>
+                                            <td><b>
+                                                    <%= categories[i].category_list %>
+                                                </b></td>
+                                            <% if (categories[i].categorystatus) { %>
+                                                <td>
+                                                    <a href="/admin/listcategory/<%=categories[i]._id%>"
+                                                        class="btn btn-sm font-sm rounded btn-danger"
+                                                        style="margin-left: 70px;">
+                                                        List
+                                                    </a>
+                                                </td>
+                                                <% } else { %>
+                                                    <td>
+                                                        <a href="/admin/unlistcategory/<%=categories[i]._id%>"
+                                                            class="btn btn-sm font-sm rounded btn-danger"
+                                                            style="margin-left: 70px;">
+                                                            Unlist
+                                                        </a>
+                                                    </td>
+                                                    <% } %>
+                                                        <td>
+                                                            <a class="btn btn-sm font-sm rounded btn-brand"
+                                                                style="margin-left: 70px;" data-bs-toggle="modal"
+                                                                data-bs-target="#modal<%=categories[i]._id%>">
+                                                                <i class="material-icons md-edit"></i> Edit
+                                                            </a>
+
+
+
+
+                                                        </td>
+                                        </tr>
+                                        <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> <!-- .col// -->
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+</main>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/admin/addcategory" method="post">
+                    <div class="mb-4">
+                        <label for="product_name" class="form-label">Category Name</label>
+                        <input type="text" placeholder="Type here" name="category_list" class="form-control" />
+                    </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<% for (var i=0; i < categories.length; i++) { %>
+    <!-- Modal -->
+    <div class="modal fade" id="modal<%=categories[i]._id%>" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/editcategory/<%=categories[i]._id%>" method="post">
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Category Name</label>
+                            <input type="text" value="<%=categories[i].category_list%>" name="category_list"
+                                class="form-control" />
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+        <!-- jQuery and Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"
+            integrity="sha512-zHps82IkB2Qa8ikvPgo9ALZgnzG1sTFR1+UeM6U/bPafOwT6lwduLvx7geRzgZI9CKN/dz3nM3/NVhFksIuQ7A=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>

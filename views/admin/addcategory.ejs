@@ -1,0 +1,31 @@
+<main class="main-wrap">
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Categories </h2>
+            </div>
+            <div>
+                <input type="text" placeholder="Search Categories" class="form-control bg-white">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <form action="/admin/addcategory" method="post">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Category Name</label>
+                                <input type="text" placeholder="Type here" name="category_list" class="form-control" />
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button   class="btn btn-primary" type="submit">Create category</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+</main>
