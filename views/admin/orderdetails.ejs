@@ -1,0 +1,174 @@
+<main class="main-wrap">
+
+    <div class="content">
+
+        <a href="/admin/orderlistview" class="btn mt-1">BACK</a>
+
+        <section class="mt-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container mb-5 mt-3">
+                        <div class="row d-flex align-items-baseline">
+                            <div class="col-xl-9">
+                                <!-- <p style="color: black;font-size: 20px;">Invoice <strong>ID: #123-123</strong></p> -->
+                            </div>
+                            <!-- <div class="col-xl-3 float-end">
+                  <a class="btn btn-light text-capitalize border-0" data-mdb-ripple-color="dark"><i
+                      class="fas fa-print text-primary"></i> Print</a>
+                  <a class="btn btn-light text-capitalize" data-mdb-ripple-color="dark"><i
+                      class="far fa-file-pdf text-danger"></i> Export</a>
+                </div> -->
+
+                        </div>
+
+                        <div class="container">
+                            <!-- <div class="col-md-12">
+                  <div class="text-center">
+                    <i class="fa fa-mdb fa-4x ms-0" style="color:#5d9fc5 ;"></i>
+                    
+                  </div>
+        
+                </div> -->
+
+
+                            <div class="row">
+                                <div class="col-xl-4">
+                                    <ul class="list-unstyled">
+                                        <li class="text-muted">Customer: <span style="color:rgb(5, 5, 5) ;">
+                                                <%=locals.orders[0].userDetails.name%>
+
+                                            </span></li>
+                                        <li class="text-muted">Customer ID:<span style="color:rgb(5, 5, 5) ;">
+                                                <%=locals.orders[0].userDetails._id%>
+                                            </span> </li>
+                                        <!-- <li class="text-muted" style="color:black ;"></li> -->
+                                        <li class="text-muted"><i class="fa fa-phone"></i> <span
+                                                style="color:rgb(5, 5, 5) ;">+91
+                                                <%=locals.orders[0].userDetails.phone%>
+                                            </span></li>
+                                    </ul>
+                                </div>
+
+
+                                <div class="col-xl-5">
+                                    <p class="text-muted"></p>
+                                    <ul class="list-unstyled">
+                                        <li class="text-muted"><i class="fa fa-circle" style="color:rgb(5, 5, 5) ;"></i> <span
+                                                class="">Order ID: <span style="color:rgb(5, 5, 5) ;">
+                                                    <%=locals.orders[0]._id%>
+                                                </span></span></li>
+                                        <li class="text-muted" style="color:black ;"><i class="fa fa-circle"
+                                                style="color:black ;"></i> <span class="">Date: <span
+                                                    style="color:rgb(5, 5, 5) ;">
+                                                    <%=locals.orders[0].date%>
+                                                </span></li>
+                                        <li class="text-muted"><i class="fa fa-circle" style="color:black ;"></i> <span
+                                                class="me-1 ">Status: <span style="color:rgb(5, 5, 5) ;">
+                                                    <%=locals.orders[0].status%>
+                                                </span></li>
+                                        <li class="text-muted"><i class="fa fa-circle" style="color:black ;"></i> <span
+                                                class="me-1 ">Payment Method: <span style="color:rgb(5, 5, 5);">
+                                                    <%=locals.orders[0].paymentMethod%>
+                                                </span></li>
+                                        <li class="text-muted"><i class="fa fa-circle" style="color:black ;"></i> <span
+                                                class="me-1 ">Payment Status: <span style="color:rgb(5, 5, 5);">
+                                                    <%=locals.orders[0].paymentStatus%>
+                                                </span></li>
+                                    </ul>
+                                </div>
+
+                                <div class="col-xl-3">
+                                    <ul class="list-unstyled">
+                                        <li class="text-muted">Shipping Address:<br> <span style="color:rgb(5, 5, 5) ;">
+                                                <%=locals.orders[0].deliveryDetails[0].address.name%>
+
+                                            </span></li>
+                                        <li class="text-muted" style="color:white ;"><span style="color:rgb(5, 5, 5) ;">
+                                                <%=locals.orders[0].deliveryDetails[0].address.address%>,
+                                                    <%=locals.orders[0].deliveryDetails[0].address.city%>
+                                            </span></li>
+                                        <li class="text-muted" style="color:white ;"><span style="color:rgb(5, 5, 5) ;">
+                                                <%=locals.orders[0].deliveryDetails[0].address.district%>,
+                                                    <%=locals.orders[0].deliveryDetails[0].address.pincode%>
+                                            </span></li>
+                                        <li class="text-muted" style="color:white ;"><i class="fa fa-phone"></i><span
+                                                style="color:rgb(5, 5, 5) ;">+91 <%=locals.orders[0].deliveryDetails[0].address.phone%>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row my-2 mx-1 justify-content-center">
+                                <table class="data-table table stripe hover nowrap mt-5">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">NUMBER</th>
+                                            <th scope="col">PRODUCT</th>
+                                            <th scope="col">QTY</th>
+                                            <th scope="col">UNIT PRICE</th>
+                                            <th scope="col">AMOUNT</th>
+                                            <th scope="col">IMAGES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%for(var i=0;i< orders.length;i++){%>
+                                            <tr>
+                                                <td>
+                                                    <%=i+1%>
+                                                </td>
+                                                <td>
+                                                    <%=orders[i].productsDetails.product_name%>
+                                                </td>
+                                                <td>
+                                                    <%=orders[i].products.quantity%>
+                                                </td>
+                                                <td>
+                                                    <%=orders[i].productsDetails.product_price%>
+                                                </td>
+                                                <td>
+                                                    <%=orders[i].subtotal%>
+                                                </td>
+                                                <td><img src="<%=orders[i].productsDetails.image[0]%>" alt=""
+                                                        width="150">
+                                                </td>
+                                            </tr>
+                                            <%}%>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8">
+                                    <!-- <p class="ms-3">Add additional notes and payment information</p> -->
+
+                                </div>
+                                <div class="col-xl-3">
+                                    <ul class="list-unstyled">
+                                        <!-- <li class="text-muted ms-3"><span class="text-black me-4">SubTotal</span>$1110</li> -->
+                                        <!-- <li class="text-muted ms-3 mt-2"><span class="text-black me-4">Tax(15%)</span>$111</li> -->
+                                    </ul>
+                                    <p class="text-black float-start " style="margin-left: -3rem;"><span
+                                            class="text-black me-3" style="font-weight: 800; font-size: larger;"> <b>SUB
+                                                TOTAL</b></span><span style="font-size: 18px;"> : <%=locals.total%>
+                                        </span>
+                                    </p>
+                                    <!-- <p class="text-black float-start " style="margin-left: -3rem;"><span
+                                        class="text-black me-3" style="font-weight: 800; font-size: larger;"> <b>OFFER
+                                            PRICE</b></span><span style="font-size: 18px;"> :
+                                        <%=locals.orders[0].offerPrice%></span></p> -->
+                                    <p class="text-black float-start " style="margin-left: -3rem;"><span
+                                            class="text-black me-3" style="font-weight: 800; font-size: larger;">
+                                            <b>GRAND
+                                                TOTAL</b></span><span style="font-size: 18px;"> :
+                                            <%=locals.orders[0].GrandTotal%>
+                                        </span></p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>

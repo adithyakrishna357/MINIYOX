@@ -5,18 +5,38 @@ const usercontroller = require('../controllers/usercontrollers');
 const middleware=require('../util/middleware')
 
 /* GET users listing. */
-router.get('/',usercontroller.HomePagerender) 
-router.get('/login',middleware.sessionHandle,usercontroller.Loginrender)  
-router.post('/login',usercontroller.Loginpost)
-router.get('/signup',middleware.sessionHandle,usercontroller.SignUprender)
-router.post("/signup",usercontroller.SignUppost)
-router.get("/logout",usercontroller.Logoutget)
-router.get('/view-products',middleware.checkUserLoggedIn,usercontroller.GetViewProducts)
+router.get('/',usercontroller.homepagerender) 
+router.get('/login',middleware.sessionHandle,usercontroller.loginrender)  
+router.post('/login',usercontroller.loginpost)
+router.get('/signup',middleware.sessionHandle,usercontroller.signuprender)
+router.post("/signup",usercontroller.signuppost)
+router.get("/logout",usercontroller.logoutget)
+router.get('/view-products',middleware.checkUserLoggedIn,usercontroller.getviewproducts)
 router.get('/singleproductview/:id',middleware.checkUserLoggedIn,usercontroller.singleproductview)
-router.get('/otplogin',middleware.sessionHandle,usercontroller.Getotplogin)
-router.post('/sendOTP', usercontroller.sendOtp);
-router.post('/otpVerify',middleware.checkUserLoggedIn, usercontroller.verifyOtp);
+router.get('/otplogin',middleware.sessionHandle,usercontroller.getotplogin)
+router.post('/sendOTP', usercontroller.sendotp);
+router.post('/otpVerify', usercontroller.verifyotp);
+router.post('/resendOTP', usercontroller.resendotp);
 router.get('/cart',middleware.checkUserLoggedIn,usercontroller.getcart)
-router.get('/addtocart/:id',middleware.sessionHandle,usercontroller.addcart)
+router.get('/addtocart/:id',middleware.checkUserLoggedIn,usercontroller.addcart);
+router.get('/removeproducts/:id',middleware.checkUserLoggedIn,usercontroller.removeproductfromcart)
+router.post('/change-cart-quality',usercontroller.changecartquality)
+router.get('/checkoutpage',middleware.checkUserLoggedIn,usercontroller.getcheckoutpage)
+router.post('/add-address',middleware.checkUserLoggedIn,usercontroller.addaddress)
+router.post('/placeorder',middleware.checkUserLoggedIn,usercontroller.placeorder)
+router.get('/order-success',middleware.checkUserLoggedIn,usercontroller.ordersuccessrender)
+router.get('/userorder-list',middleware.checkUserLoggedIn,usercontroller.orderlistrender)
+router.post('/cancel-order',middleware.checkUserLoggedIn,usercontroller.cancelorder)
+router.get('/order-details/:id',middleware.checkUserLoggedIn,usercontroller.orderdetails)
+router.get('/userprofile/:id',middleware.checkUserLoggedIn,usercontroller.getuserprofile)
+router.post('/profileinformation/:id',middleware.checkUserLoggedIn,usercontroller.editprofileinfo)
+router.get('/forgotpassword',middleware.sessionHandle,usercontroller.forgotgetotplogin)
+router.post('/forgototpsendotp',usercontroller.forgotsendotp)
+router.post('/forgototpVerify',usercontroller.forgotverifyotp);
+router.post('/resetpassword/:id',usercontroller.resetpassword)
+router.get('/changepassword',middleware.checkUserLoggedIn,usercontroller.changepassword)
+router.post('/changepassword',usercontroller.changepasswordpost)
+router.post('/verify-payment',middleware.checkUserLoggedIn,usercontroller.verifypayment)
+
 
 module.exports = router;

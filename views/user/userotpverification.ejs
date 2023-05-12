@@ -11,21 +11,36 @@
               <img src="/images/logo2 copy.png" alt="logo" class="logo">
             </div>
             <p class="login-card-description">OTP Verification</p>
-            <a href="" class="text-danger">code send to your <%= mobile%></a>
-
-            <form action="/otpVerify" method="post">
-              <div class="form-group">
-                <input hidden name="mobile" value="<%= mobile%>">
-                <!-- <label for="email"  class="sr-only">Email</label> -->
-                <input type="number" name="otp" id="otp" class="form-control" placeholder="Enter your OTP here ...">
+            <a href="" class="text-danger">OTP send to your <%= mobile%></a>
+            <% if (Message) { %>
+              <div class="text-center mt-2">
+                <span class="font-weight-bold text-danger">
+                  <%=Message%>
+                </span>
               </div>
-              <div>
-                <div id="countdown-timer" style="width: 130px;">Time Left: 1:00</div>
-                <a class="text-right text-primary p-1 cursor" href="/sendOTP"  style="width: 70px; margin-left: 180px; margin-top: -25px;">Resend OTP</a>
-              </div>
-              <input id="login" class="btn btn-block login-btn mb-4" type="submit" value="verify">
+              <% } %>
 
-            </form>
+                <form action="/otpVerify" method="post">
+                  <div class="form-group">
+                    <input hidden name="mobile" id="mobile" value="<%= mobile%>">
+                    <!-- <label for="email"  class="sr-only">Email</label> -->
+                    <input type="tel" name="otp" id="otp" class="form-control" placeholder="Enter your OTP here ...">
+                  </div>
+
+                  <div>
+                    <div id="countdown-timer" style="width: 184px;">resend OTP in 1 minute</div>
+                  </div>
+
+                  <div id="verifyOtp" class="col-md-12 " style="display: none;min-height: 0; position: relative;">
+                    <p class="col-md-8" style="float: left; padding-left: 0;"> Don't receive the code?</p>
+                    <p class="text-right text-primary p-1 cursor col-md-4" id="resend-otp" type="btn"
+                      style=" cursor: pointer; float: right;">Resend OTP</p>
+
+                  </div>
+                  <input id="login" class="btn btn-block login-btn " style="margin-top: 25px;" type="submit"
+                    value="verify">
+
+                </form>
 
           </div>
         </div>
@@ -66,7 +81,7 @@
 
   // Get the countdown timer element
   const countdownTimer = document.getElementById("countdown-timer");
-
+  const verifyOtp = document.getElementById("verifyOtp")
   // Initialize the timer value
   let timerValue = timeLimit;
 
@@ -75,16 +90,55 @@
     timerValue--;
     const minutes = Math.floor(timerValue / 60);
     const seconds = timerValue % 60;
-    countdownTimer.innerHTML = `Time Left: ${minutes}:${seconds
+    countdownTimer.innerHTML = `resend OTP in: ${minutes}:${seconds
       .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, "0")} minutes`;
 
     // If the timer reaches zero, clear the interval and disable the form
     if (timerValue === 0) {
       clearInterval(countdownInterval);
-      document.getElementById("otp").disabled = true;
-      document.querySelector('button[type="submit"]').disabled = true;
-      countdownTimer.innerHTML = "Time's up!";
+      verifyOtp.style.display = "block";
+      countdownTimer.style.display = "none";
+      // document.getElementById("otp").disabled = true;
+      // document.querySelector('button[type="submit"]').disabled = true;
+      // countdownTimer.innerHTML = "Time's up!";
     }
   }, 1000);
+
+
+  const mobile = document.getElementById('mobile').value
+  $('#resend-otp').click(() => {
+    $.ajax({
+      url: '/resendOTP',
+      method: 'post',
+      data: { mobile },
+      success: (response) => {
+        console.log(response);
+        const timeLimit = 60;
+        let timerValue = timeLimit;
+        if (response) {
+          verifyOtp.style.display = "none";
+          countdownTimer.style.display = "block";
+          const resendcountdownInterval = setInterval(() => {
+            timerValue--;
+            const minutes = Math.floor(timerValue / 60);
+            const seconds = timerValue % 60;
+            countdownTimer.innerHTML = `resend OTP in: ${minutes}:${seconds
+              .toString()
+              .padStart(2, "0")} minutes`;
+
+            // If the timer reaches zero, clear the interval and disable the form
+            if (timerValue === 0) {
+              clearInterval(resendcountdownInterval);
+              verifyOtp.style.display = "block";
+              countdownTimer.style.display = "none";
+              // document.getElementById("otp").disabled = true;
+              // document.querySelector('button[type="submit"]').disabled = true;
+              // countdownTimer.innerHTML = "Time's up!";
+            }
+          }, 1000);
+        }
+      }
+    })
+  })
 </script>

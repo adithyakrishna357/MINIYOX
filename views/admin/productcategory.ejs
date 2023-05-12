@@ -7,9 +7,7 @@
             <div>
                 <h2 class="content-title card-title">Categories </h2>
             </div>
-            <div style="padding-left: 575px;">
-                <input type="text" placeholder="Search Categories" class="form-control bg-white">
-            </div>
+            
             <!-- Button trigger modal -->
             <div class="">
 
@@ -25,14 +23,10 @@
                 <div class="row" style="width: 1522px;">
                     <div class="col-md-9">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" />
-                                            </div>
-                                        </th>
+                                        
                                         <th>Index</th>
                                         <th>Category Name</th>
                                         <th style="padding-left:73px;">List/Unlist</th>
@@ -42,11 +36,7 @@
                                 <tbody>
                                     <% for (var i=0; i < categories.length; i++) { %>
                                         <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
+                                            
                                             <td>
                                                 <%= i+1 %>
                                             </td>
@@ -160,3 +150,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"
             integrity="sha512-zHps82IkB2Qa8ikvPgo9ALZgnzG1sTFR1+UeM6U/bPafOwT6lwduLvx7geRzgZI9CKN/dz3nM3/NVhFksIuQ7A=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+            <script>
+                $(document).ready(function () {
+                    $('#myTable').DataTable({
+                        "paging": true,   // enable pagination
+                        "ordering": true, // enable sorting
+                        "searching": true // enable searching
+                    });
+                });
+            
+            
+            </script>

@@ -11,9 +11,9 @@
                         <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
                         <div class="slick3 gallery-lb">
-                            <div class="item-slick3 zoomable" data-thumb="<%= productdetails.image[0]%>">
+                            <div class="item-slick3 " data-thumb="<%= productdetails.image[0]%>">
                                 <div class="wrap-pic-w pos-relative">
-                                    <img src="<%= productdetails.image[0]%>" alt="IMG-PRODUCT">
+                                    <img class="zoomable" src="<%= productdetails.image[0]%>" alt="IMG-PRODUCT">
 
                                     <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-01.jpg">
                                         <i class="fa fa-expand"></i>
@@ -21,9 +21,9 @@
                                 </div>
                             </div>
 
-                            <div class="item-slick3 zoomable" data-thumb="<%= productdetails.image[1]%>">
+                            <div class="item-slick3 " data-thumb="<%= productdetails.image[1]%>">
                                 <div class="wrap-pic-w pos-relative">
-                                    <img src="<%= productdetails.image[1]%>" alt="IMG-PRODUCT">
+                                    <img class="zoomable" src="<%= productdetails.image[1]%>" alt="IMG-PRODUCT">
 
                                     <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-02.jpg">
                                         <i class="fa fa-expand"></i>
@@ -31,9 +31,9 @@
                                 </div>
                             </div>
 
-                            <div class="item-slick3 zoomable"  data-thumb="<%= productdetails.image[2]%>">
+                            <div class="item-slick3 "  data-thumb="<%= productdetails.image[2]%>">
                                 <div class="wrap-pic-w pos-relative">
-                                    <img src="<%= productdetails.image[2]%>" alt="IMG-PRODUCT">
+                                    <img class="zoomable" src="<%= productdetails.image[2]%>" alt="IMG-PRODUCT">
 
                                     <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-03.jpg">
                                         <i class="fa fa-expand"></i>
@@ -101,7 +101,7 @@
 
                         <div class="flex-w flex-r-m p-b-10">
                             <div class="size-204 flex-w flex-m respon6-next">
-                                <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                <!-- <div class="wrap-num-product flex-w m-r-20 m-tb-10">
                                     <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
                                         <i class="fs-16 zmdi zmdi-minus"></i>
                                     </div>
@@ -111,10 +111,11 @@
                                     <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
                                         <i class="fs-16 zmdi zmdi-plus"></i>
                                     </div>
-                                </div>
-                                <button data-product="<%= productdetails._id%>" onclick="addtocart('<%= productdetails._id%>')" type="submit" class="flex-c-m stext-101 cl0 size-101 bg-success bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" style="margin-top: 20px;">
+                                </div> -->
+                                <!-- <a href="/addtocart/<%= productdetails._id%>" class="flex-c-m stext-101 cl0 size-101 bg-success bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" style="margin-top: 20px;">
                                     Add to Cart
-                                </button>
+                                </a> -->
+                                <button  id="addTocart" data-product="<%= productdetails._id%>" onclick="addTocart('<%= productdetails._id%>')" class="flex-c-m stext-101 cl0 size-101 bg-success bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">Add to Cart</button>
                             </div>
                         </div>	
                     </div>
@@ -321,10 +322,18 @@
 
 </div>
 <script>
-    $(document).ready(function () {
-        $('.zoomable').zoom({
-            zoomType: 'inner',
-            cursor: 'crosshair'
-        });
-    });
+    
+    //function addTocart(proId){
+    //    $.ajax({
+    //        url:"/addtocart/"+proId,
+    //        method:"get",
+    //        success:(response)=>{
+    //            if(response.status){
+    //                let count =$('.js-show-cart').html()
+    //                count =parseInt(count)+1
+    //                $('.js-show-cart').html(count)
+    //            }
+    //        }
+    //    })
+    //}
 </script>

@@ -1,0 +1,141 @@
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<section class="breadcrumb-option mt-5">
+    <div class="container">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">My Orders</h2>
+            </div>
+           
+        </div>
+    </div>
+</section>
+
+<% if(orders.length !=0){%>
+
+    <Section class="pl-5 pr-5 pt-3">
+        <div class="pl-5 pr-5 table-responsive">
+            <table class="table table-hover table-striped table-bordered " id="orderTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>#</th>
+                        <th scope="col">ORDER ID</th>
+                        <th scope="col">DATE</th>
+                        <th scope="col">PAYMENT</th>
+                        <!-- <th scope="col">SUBTOTAL</th> -->
+                        <!-- <th scope="col">OFFER</th> -->
+                        <th scope="col">GRAND TOTAL</th>
+                        <th scope="col">STATUS</th>
+                        <th scope="col">CHANGE STATUS</th>
+                        <th scope="col">DETAILS</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <%for(var i=0;i<orders.length;i++){%>
+                        <tr>
+                            <td><b>
+                                    <%=i+1%>
+                                </b></td>
+                            <td><b>
+                                    <%=orders[i]._id%>
+                                </b></td>
+                            <td><b>
+                                    <%=orders[i].date%>
+                                </b></td>
+                            <td><b>
+                                    <%=orders[i].paymentMethod%>
+                                </b></td>
+                            <!-- <td><b><%=orders[i].subtotal%></b></td> -->
+                            <!-- <td><b><%=orders[i].offerPrice%></b></td> -->
+                            <td><b>
+                                    <%=orders[i].GrandTotal%>
+                                </b></td>
+                            <td><b>
+                                    <%=orders[i].status%>
+                                </b></td>
+                            <td>
+                                <% if(orders[i].status=='cancel' ){ %>
+                                    <b class="text-primary">cancel</b>
+                                    <% }else if(orders[i].status=='return' ){%>
+                                        <b class="text-primary">return</b>
+                                        <% }else if(orders[i].status=='cancelled' ){ %>
+                                            <b class="text-danger">cancelled</b>
+                                            <% }else if(orders[i].status=='returned' ){%>
+                                                <b class="text-danger">returned</b>
+                                                <% }else if(orders[i].status=='deliverd' ){%>
+                                                    <a class="btn btn-primary text-white"
+                                                        onclick="changeStatus('<%=orders[i]._id%>','return')"><b>Return</b></a>
+                                                    <% }else{%>
+                                                        <a class="btn btn-danger text-white"
+                                                            onclick="changeStatus('<%=orders[i]._id%>','cancel')"><b>Cancel</b></a>
+                                                        <%}%>
+
+                            </td>
+                            <td><a href="/order-details/<%=orders[i]._id%>" class="btn btn-dark"><b>Details</b></a></td>
+                        </tr>
+
+                        <%}%>
+                </tbody>
+            </table>
+        </div>
+    </Section>
+    <%} else {%>
+
+        <div class="container-fluid  mt-100" style="margin-top: 1rem;">
+            <div class="row">
+
+                <div class="col-md-12">
+
+                    <!-- <div class="card">
+               <div class="card-header">
+               <h5>Cart</h5>
+               </div> -->
+                    <div class="card-body cart">
+                        <div class="col-sm-12 empty-cart-cls text-center">
+                            <img src="/images/emptyorder.png" width="500" height="200" class="img-fluid mb-4 mr-3">
+                            <h3 style="margin-top: -6rem;"><strong>Your Order List is Empty</strong></h3>
+                            <h4>Add something to make me happy :)</h4>
+                            <a href="/view-products" class="btn btn-success cart-btn-transform m-3" data-abc="true">Make
+                                your First Order</a>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        </div>
+
+        <%}%>
+            <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+            <script>
+                const changeStatus = async (orderId, status) => {
+
+                    $.ajax({
+                        method: 'post',
+                        url: '/cancel-order',
+                        data: { orderId, status },
+                        success: (response) => {
+                            if (response.status = 'changed') {
+                                location.reload()
+                            }
+                        }
+
+                    })
+
+
+                }
+            </script>
+            <script>
+                $(document).ready(function () {
+                    $('#orderTable').DataTable();
+                });
+
+            </script>

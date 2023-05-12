@@ -1,0 +1,536 @@
+<style>
+  .black-btn {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+  .black-btn:hover {
+    background-color: #f3f2ee;
+    color: black;
+  }
+</style>
+
+
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option" style="background:#f3f2ee; padding: 30px 0;">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb__text">
+          <h4>Check Out</h4>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Checkout Section Begin -->
+<section class="container mt-3">
+  <div class="">
+    <div class="checkout__form">
+      <form action=" " method="post">
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+
+            <button type="button" class="btn black-btn btn-block" data-toggle="modal" data-target="#exampleModalCenter">
+              ADD ADDRESS
+            </button>
+            <!-- <h6 class="coupon__code"><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click
+                            here</a> to enter your code</h6> -->
+
+            <table class="table mt-3 p-3 table-bordered " style="background-color: #f3f2ee;;">
+              <thead>
+                <tr>
+                  <th scope="col">Select</th>
+                  <th scope="col" style="text-align: center;">Select Shipping Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%for(var j=0; j<address.length ;j++){%>
+                  <tr>
+                    <th scope="row"><input type="radio" name="address"
+                        style="width: 20px;height: 20px; accent-color: black; cursor: pointer;"
+                        value="<%=address[j].address._id%>" class="address"></th>
+                    <td><span><b> Name : </b>
+                        <%=address[j].address.name%>,
+                      </span><br>
+                      <span><b> Address : </b>
+                        <%=address[j].address.address %>,<%=address[j].address.city%>,<%=address[j].address.district%>,
+                              <%=address[j].address. pincode%>(po),
+                      </span><br>
+                      <span><b> Phone : </b>
+                        <%=address[j].address.phone%>
+                      </span>
+
+                    </td>
+
+                  </tr>
+                  <% }%>
+              </tbody>
+            </table>
+
+            <hr>
+          </div>
+
+
+          <div class="col-lg-6 col-md-6">
+            <div class="cart__discount" style="margin-bottom: 25px; margin-left: 0rem;">
+              <h6 style="margin-bottom: 1rem; color: #111111;font-weight: 700;text-transform: uppercase;">Discount codes
+              </h6>
+              <form>
+                <!-- <input type="text" placeholder="Coupon code" id="coupon" style="width: 18rem;padding: 0.6rem;"> -->
+                <input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5"
+                  style="width: 538px; text-align: center;" type="text" name="coupon" placeholder="Coupon Code">
+                <!-- <button type="button" class="btn-dark" id="applyCoupon"
+                  style="padding: 0.6rem;width: 7rem;font-weight: 700;">Apply</button> -->
+                <div class="flex-c-m stext-101 cl2 size-118 black-btn  bor13 hov-btn3 p-lr-15 trans-04 pointer  m-tb-5">
+                  Apply coupon</div>
+              </form>
+
+              <div style="display: none;" id="errorCoupon">
+                <h5 class="text-danger">invalid coupon</h5>
+              </div>
+            </div>
+
+
+            <div class="checkout__order" style="background-color: #f3f2ee; padding: 30px;">
+              <div class="table-responsive"></div>
+              <table class="table table-bordered ">
+                <h4 style="font-weight: 800;">Your order</h4>
+                <thead>
+                  <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">quantity</th>
+                    <th scope="col">price</th>
+                    <th scope="col">subtotal</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <%for(var i=0;i<products.length;i++ ){%>
+                    <tr>
+                      <th scope="row" class="productid" data-productid="<%=products[i].productsDetails._id%>">
+                        <%=i+1%>
+                      </th>
+                      <td>
+                        <%=products[i].productsDetails.product_name%>
+                      </td>
+                      <td class="Quantity" data-quantity="<%=products[i].products.quantity%>">
+                        <%=products[i].products.quantity%>
+                      </td>
+                      <td>
+                        <%=products[i].productsDetails.product_price%>
+                      </td>
+                      <td>
+                        <%=products[i].subTotal%>
+                      </td>
+                    </tr>
+                    <% }%>
+                </tbody>
+              </table>
+              <ul class="checkout__total__all"
+                style="border-bottom-style: solid;border-bottom-width: 1px;border-bottom-color: #a7a4a4; padding: 15px;">
+                <li style="list-style: none;font-size: 16px;color: #111111;line-height: 40px;overflow: hidden;">Subtotal
+                  <span class="text-dark" style="font-weight: 700;float: right;" id="Total">
+                    <%=locals.totalprice%>
+                  </span>
+                </li>
+                <li style="list-style: none;font-size: 16px;color: #111111;line-height: 40px;overflow: hidden;">
+                  OfferPrice <span class="text-dark" style="font-weight: 700;float: right;"
+                    id="offerPrice">₹000.00</span></li>
+                <li style="list-style: none;font-size: 16px;color: #111111;line-height: 40px;overflow: hidden;">Total
+                  <span class="text-dark" style="font-weight: 700;float: right;" id="grandTotal">
+                    <%=locals.totalprice%>
+                  </span>
+                </li>
+              </ul>
+              <div class="checkout__input__checkbox" style="position: relative;">
+
+                <input type="radio" name="payment"
+                  style="width: 16px;height: 16px; accent-color: black; cursor: pointer; float: left;" class="payment"
+                  value="cod">
+                <span class="">cash on delivery</span> <br>
+                <input type="radio" name="payment"
+                  style="width: 16px;height: 16px; accent-color: black; cursor: pointer;float: left;" class="payment"
+                  value="wallet" data-walletAmount="<%=locals.walletAmount%>" id="wallet">
+                <span class="">wallet</span> <br>
+                <input type="checkbox" id="onlinepaymentbtn"
+                  style="width: 16px;height: 16px; accent-color: rgb(5, 9, 27); cursor: pointer;float: left;"
+                  value="online payment">
+                <span class="">online payments</span>
+                <div class="mt-2" style="display: none;" id="onlinepay">
+                  &nbsp;&nbsp;&nbsp; &nbsp; <input type="radio" name="payment"
+                    style="width: 16px;height: 16px; accent-color: black; cursor: pointer;" class="payment"
+                    value="razorpay">
+                  <span class="mt-2 ">razorpay</span>
+                  &nbsp;&nbsp;&nbsp; &nbsp; <input type="radio" name="payment"
+                    style="width: 16px;height: 16px; accent-color: black; cursor: pointer;" class="payment"
+                    value="Paypal">
+                  <span class="mt-2 ">Paypal</span>
+                </div>
+
+              </div>
+              <button type="submit" class="btn btn-dark" style="width: 100%;margin-top: 8px;font-size: 14px;
+              color: #ffffff;
+              background: #111111;
+              font-weight: 700;
+              border: none;
+              text-transform: uppercase;
+              display: inline-block;
+              padding: 14px 30px;" id="placeorder">PLACE ORDER</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    </form>
+  </div>
+  </div>
+</section>
+<!-- Checkout Section End -->
+
+
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">ADD ADDRESS</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/add-address" method="post" class="p-4">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="Name">Name</label>
+              <input type="text" class="form-control" name="name" id="firstName" placeholder="Name">
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label for="inputAddress">Address</label>
+            <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address">
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputState">District</label>
+              <select id="" class="form-control" name="district" required>
+                <option value=""> Select district</option>
+                <option>Alappuzha</option>
+                <option>Kollam</option>
+                <option>Pathanamthitta</option>
+                <option>Trivandrum</option>
+                <option>Ernakulam</option>
+                <option>Thrissur</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputZip">City</label>
+              <input type="text" class="form-control" name="city">
+            </div>
+          </div>
+
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="forPincode">pincode</label>
+              <input type="text" class="form-control" name="pincode">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="phone">phone</label>
+              <input type="text" class="form-control" name="phone" minlength="10" maxlength="10">
+            </div>
+          </div>
+          <hr>
+          <div style="margin-left: 73%;">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header mt-5">
+        <h5 class="modal-title" id="exampleModalCenterTitle"><span style="font-weight: 900;">ADD ADDRESS</span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/add-address" method="post" class="p-4">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="Name">Name</label>
+              <input type="text" class="form-control" name="name" id="firstName" placeholder="Name">
+            </div>
+
+          </div>
+          <div class="form-group">
+            <label for="inputAddress">Address</label>
+            <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address">
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputState">District</label>
+              <select id="" class="form-control" name="district" required>
+                <option value=""> Select district</option>
+                <option>Alappuzha</option>
+                <option>Kollam</option>
+                <option>Pathanamthitta</option>
+                <option>Trivandrum</option>
+                <option>Ernakulam</option>
+                <option>Thrissur</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputZip">City</label>
+              <input type="text" class="form-control" name="city">
+            </div>
+          </div>
+
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="forPincode">pincode</label>
+              <input type="text" class="form-control" name="pincode">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="phone">phone</label>
+              <input type="text" class="form-control" name="phone" minlength="10" maxlength="10">
+            </div>
+          </div>
+          <hr>
+          <div style="margin-left: 73%;">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> -->
+<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  var clicked = true
+  document.getElementById('onlinepaymentbtn').addEventListener('click', () => {
+
+    if (clicked) {
+      document.getElementById('onlinepay').style.display = 'block'
+      clicked = false
+    } else {
+      document.getElementById('onlinepay').style.display = 'none'
+      clicked = true
+    }
+
+  })
+
+</script>
+
+<script>
+  document.getElementById('placeorder').addEventListener('click', function (event) {
+    event.preventDefault()
+    placeorder()
+  })
+
+  const placeorder = () => {
+    let GrandTotal = document.getElementById('grandTotal').innerText
+    GrandTotal = GrandTotal.replace(/,/g, "")
+    GrandTotal = GrandTotal.replace('₹', '')
+    GrandTotal = parseInt(GrandTotal)
+
+    // console.log(GrandTotal, '////////////////////////');
+    // console.log(products,'333333333333333333333333333333');
+    // console.log(addressid,'777777777777777777777777777777');
+    // console.log(paymentMethod,'awsedrftgvbhnjmk,lsderftghnjmk');
+
+    if (addressid && paymentMethod && subtotal) {
+      // console.log("hfghhg",products);
+      var orderDetails = { products, addressid, paymentMethod, subtotal, GrandTotal }
+      $.ajax({
+        url: '/placeorder',
+        method: 'post',
+        data: {
+          addressid,
+          paymentMethod,
+          subtotal,
+          GrandTotal
+        },
+        success: (response) => {
+          if (response.status === 'out of stock') {
+            // console.log("out of stock");
+            Swal.fire({
+              icon: 'error',
+              title: 'out of stock',
+              text: `${response.product} is out of stock, ${response.product_quantuty} products only left`,
+            })
+          }
+          else if (paymentMethod === 'cod') {
+            if (response.status === 'success') {
+              location.assign(`/order-success?orderId=${response.orderId}`)
+
+            }
+          } else if (paymentMethod === 'razorpay') {
+
+
+            console.log("razproduct", orderDetails);
+            localStorage.setItem('order', JSON.stringify(orderDetails))
+            razorpayPayment(response)
+            // console.log(response.amount,"aaaaaaaaaamount");
+
+
+          }
+        }
+      })
+    }
+    else {
+      Swal.fire({
+        icon: 'error',
+        // title: 'Oops...',
+        text: 'All Fields  are Required !',
+      })
+    }
+
+  }
+  // console.log('HELLO');
+  var addressid
+
+  const addressId = document.querySelectorAll('.address')
+
+  addressId.forEach(function (address) {
+    address.addEventListener('click', function () {
+      addressid = this.value
+    })
+  })
+
+  const productId = []
+  const quantity = []
+
+  document.querySelectorAll('.productid').forEach(function (product) {
+    productId.push(product.dataset.productid)
+  })
+
+  document.querySelectorAll('.Quantity').forEach(function (product) {
+    quantity.push(Number(product.dataset.quantity))
+  })
+
+
+  var products = []
+
+  for (let i = 0; i < productId.length; i++) {
+    product = { productId: productId[i], quantity: quantity[i] }
+    products.push(product)
+  }
+  console.log(products);
+
+
+  var subtotal = document.querySelector('#Total').innerText
+  subtotal = subtotal.replace(/,/g, "")
+  subtotal = subtotal.replace('₹', '')
+  subtotal = parseInt(subtotal)
+
+  var paymentMethod
+  document.querySelectorAll('.payment').forEach(function (payment) {
+    payment.addEventListener('click', function () {
+      paymentMethod = this.value
+    })
+  })
+
+
+</script>
+<script>
+  const razorpayPayment = (responses) => {
+    var options = {
+      "key": "rzp_test_ZJyFwWTzVdpEiM", // Enter the Key ID generated from the Dashboard
+      "amount": responses.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      "currency": "INR",
+      "name": "MINIYOX", //your business name
+      "description": "Test Transaction",
+      // "image": "https://example.com/your_logo",
+      "order_id": responses.razorpayId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      "handler": function (response) {
+        // alert(response.razorpay_payment_id);
+        // alert(response.razorpay_order_id);
+        // alert(response.razorpay_signature)
+        verifyRazoPayment(response, responses.orderId, responses.amount)
+      },
+      "prefill": {
+        "name": responses.name, //your customer's name
+        "email": responses.email,
+        "contact": responses.phone
+      },
+      "notes": {
+        "address": "Razorpay Corporate Office"
+      },
+      "theme": {
+        "color": "#3399cc"
+      }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+  }
+
+
+  const verifyRazoPayment = async (razorResponse, orderId, amount) => {
+
+    try {
+      const order = JSON.parse(localStorage.getItem('order'))
+      const res = await axios({
+        method: 'POST',
+        url: '/verify-payment',
+        data: { razorResponse, orderId, amount, order }
+      })
+      // console.log(res);
+
+      if (res.data.status === 'success') {
+       
+        setTimeout(function () {
+          // console.log(res.data.orderId);
+          location.assign(`/order-success?orderId=${res.data.orderId}`)
+        }, 1000)
+
+      } else {
+        Swal.fire({
+          position: 'top-center',
+          icon: 'error',
+          title: res.data.message,
+          showConfirmButton: false,
+          timer: 3000
+        })
+
+      }
+
+
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+</script>

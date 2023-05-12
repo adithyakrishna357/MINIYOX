@@ -13,22 +13,19 @@
             <p class="login-card-description">OTP Login</p>
 
 
-            <!-- <% if (message) { %>
-                <p class="text-danger"><%=message%></p>
-               
-              <% } %> -->
+            
             <form action="/sendOTP" method="post">
               <div class="form-group">
                 <!-- <label for="mobile"  class="sr-only">Mobile Number</label> -->
                 <input type="tel" name="mobile" id="mobile" class="form-control"
                   placeholder="Mobile Number without country code">
               </div>
-              <input class="btn btn-block login-btn mb-4" type="submit" value="send OTP">
+              <input class="btn btn-block login-btn mb-4" style="margin-top: 25px;" type="submit" value="send OTP">
 
             </form>
-            <% if (message) { %>
+            <% if (Message) { %>
               <div class="text-center mt-4">
-                <span class="font-weight-bold text-danger cursor"><%=message%></span>
+                <span class="font-weight-bold text-danger cursor"><%=Message%></span>
               </div>
             <% } %>
             

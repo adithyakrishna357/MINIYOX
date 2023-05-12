@@ -1,0 +1,287 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+<style>
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        width: 100%;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropOptions {
+        border-radius: 6px;
+        padding: 6px;
+        width: 100px;
+        background-color: #1e1e2f;
+        border: solid 2px #525260;
+        color: white;
+    }
+
+
+
+
+    table {
+        max-width: 100%;
+        overflow-x: auto;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        width: 25%;
+        padding: 10px;
+        text-align: left;
+    }
+
+    @media (max-width: 768px) {
+
+        th:nth-child(4),
+        td:nth-child(4),
+        th:nth-child(5),
+        td:nth-child(5) {
+            display: none;
+        }
+
+        th,
+        td {
+            width: 50%;
+        }
+    }
+</style>
+<main class="main-wrap">
+    <div class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card ">
+                    <div class="content-header">
+                        <div>
+                            <h2 class="content-title card-title pt-30" style="padding-left: 43px;">Orders</h2>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+
+
+                            <table class="table table-hover table-fixed mt-5 table tablesorter" id="myTable">
+
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ORDER_ID</th>
+                                        <th>CUSTOMER_ID</th>
+                                        <th>AMOUNT</th>
+                                        <th>DATE & TIME</th>
+                                        <th>PAYMENT METHOD</th>
+                                        <th>PAYMENT STATUS</th>
+                                        <th>ORDER STATUS</th>
+                                        <th>DETAILS</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <%for(var i=0;i<locals.orders.length;i++){%>
+                                        <tr>
+                                            <td>
+                                                <%=i+1%>
+                                            </td>
+                                            <td>
+                                                <%=orders[i]._id%>
+                                            </td>
+                                            <td>
+                                                <%=orders[i].userId%>
+                                            </td>
+                                            <td>
+                                                <%=orders[i].GrandTotal%>
+                                            </td>
+                                            <td>
+                                                <%=orders[i].date%>
+                                            </td>
+                                            <td>
+                                                <%=orders[i].paymentMethod%>
+                                            </td>
+                                            <td>
+                                                <% if(orders[i].status=='deliverd' ){ %>
+                                                    <b class="text-success">paid</b>
+                                                    <%} else {%>
+                                                        <%=orders[i].paymentStatus%>
+                                                            <%}%>
+                                            </td>
+                                            <td>
+                                                <% if(orders[i].status==='placed' ){ %>
+                                                    <div class="dropdown">
+                                                        <button class="dropOptions text-success">
+                                                            <%=orders[i].status%>
+                                                        </button>
+                                                        <div class="dropdown-content p-3 bg-white text-dark">
+                                                            <a class="text-dark "
+                                                                style="font-weight:500;margin-bottom: 1rem;cursor: pointer;"
+                                                                onclick="changeStatus('<%=orders[i]._id%>',' <%=orders[i].paymentStatus%>','<%=orders[i].status%>','<%=orders[i].userId%>')">Shipped</a>
+                                                            <hr style="border: solid 2px #1e1e2f ;">
+                                                            <a href="#" class="text-dark "
+                                                                style="font-weight:500;margin-bottom: 1rem;"
+                                                                onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','cancelled','<%=orders[i].userId%>')">Cancel</a>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <% }else if(orders[i].status=='shipped' ){%>
+
+                                                        <div class="dropdown">
+                                                            <button class="dropOptions text-success">
+                                                                <%=orders[i].status%>
+                                                            </button>
+                                                            <div class="dropdown-content p-3 bg-white text-dark">
+                                                                <a class="text-dark "
+                                                                    style="font-weight:500;margin-bottom: 1rem;cursor: pointer;"
+                                                                    onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','<%=orders[i].status%>','<%=orders[i].userId%>')">delivered</a>
+                                                                <hr style="border: solid 2px #1e1e2f ;">
+                                                                <a href="#" class="text-dark "
+                                                                    style="font-weight:500;margin-bottom: 1rem;"
+                                                                    onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','cancelled','<%=orders[i].userId%>')">Cancel</a>
+
+                                                            </div>
+                                                        </div>
+                                                        <% }else if(orders[i].status=='deliverd' ){%>
+                                                            <button class="dropOptions text-white">deliverd</button>
+                                                            <% }else if(orders[i].status=='returned' ){%>
+                                                                <button
+                                                                    class="dropOptions text-primary">returned</button>
+                                                                <% }else if(orders[i].status=='return' ){%>
+                                                                    <div class="dropdown">
+                                                                        <button class="dropOptions text-primary">
+                                                                            <%=orders[i].status%>
+                                                                        </button>
+                                                                        <div
+                                                                            class="dropdown-content p-3 bg-white text-dark">
+                                                                            <a class="text-dark "
+                                                                                style="font-weight:500;margin-bottom: 1rem;cursor: pointer;"
+                                                                                onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','<%=orders[i].status%>','<%=orders[i].userId%>')">accept</a>
+                                                                            <hr style="border: solid 2px #1e1e2f ;">
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <% }else if(orders[i].status=='cancel' ){%>
+                                                                        <div class="dropdown">
+                                                                            <button class="dropOptions text-primary">
+                                                                                <%=orders[i].status%>
+                                                                            </button>
+                                                                            <div
+                                                                                class="dropdown-content p-3 bg-white text-dark">
+                                                                                <a class="text-dark "
+                                                                                    style="font-weight:500;margin-bottom: 1rem;cursor: pointer;"
+                                                                                    onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','<%=orders[i].status%>','<%=orders[i].userId%>')">accept</a>
+                                                                                <hr style="border: solid 2px #1e1e2f ;">
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <% }else if(orders[i].paymentStatus=='paid' ){%>
+
+                                                                            <div class="dropdown">
+                                                                                <button
+                                                                                    class="dropOptions text-success">
+                                                                                    <%=orders[i].status%>
+                                                                                </button>
+                                                                                <div
+                                                                                    class="dropdown-content p-3 bg-white text-dark">
+                                                                                    <a class="text-dark "
+                                                                                        style="font-weight:500;margin-bottom: 1rem;cursor: pointer;"
+                                                                                        onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','<%=orders[i].status%>','<%=orders[i].userId%>')">Shipped</a>
+                                                                                    <hr
+                                                                                        style="border: solid 2px #1e1e2f ;">
+                                                                                    <a href="#" class="text-dark "
+                                                                                        style="font-weight:500;margin-bottom: 1rem;"
+                                                                                        onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','cancelled','<%=orders[i].userId%>')">Cancel</a>
+
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <% }else if(orders[i].status=='pending' ){%>
+                                                                                <div class="dropdown">
+                                                                                    <button
+                                                                                        class="dropOptions text-primary">
+                                                                                        <%=orders[i].status%>
+                                                                                    </button>
+                                                                                    <div
+                                                                                        class="dropdown-content p-3 bg-white text-dark">
+                                                                                        <a href="#" class="text-dark "
+                                                                                            style="font-weight:500;margin-bottom: 1rem;"
+                                                                                            onclick="changeStatus('<%=orders[i]._id%>','<%=orders[i].paymentStatus%>','cancelled','<%=orders[i].userId%>')">Cancel</a>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                                <%} else {%>
+                                                                                    <button
+                                                                                        class="dropOptions text-danger">cancelled</button>
+                                                                                    <%}%>
+
+                                            </td>
+                                            <!-- <td><a  href="/admin/order-details/<%=orders[i]._id%>"><i
+                                                    class="bi bi-bag-plus"></i> <%=orders[i]._id%></a></td> -->
+                                                    <td> <a href="/admin/order-details/<%=orders[i]._id%>"><i class="bi bi-bag-plus"></i></a></td>
+                                        </tr>
+                                        <%}%>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const changeStatus = async (orderId, paymentStatus, status, userId) => {
+
+        if (status === 'placed') {
+            status = 'shipped'
+        } else if (status === 'shipped') {
+            status = 'deliverd'
+        } else if (status === 'return') {
+            status = 'returned'
+        } else if (status === 'cancel') {
+            status = 'cancelled'
+        }
+        console.log(status);
+
+        $.ajax({
+            method: 'post',
+            url: '/admin/change-order-status',
+            data: { orderId, status, paymentStatus, userId },
+            success: (response) => {
+                if (response.status = 'status changed') {
+                    location.reload()
+                }
+            }
+
+        })
+
+
+
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            "paging": true,   // enable pagination
+            "ordering": true, // enable sorting
+            "searching": true // enable searching
+        });
+    });
+
+
+</script>
