@@ -22,6 +22,7 @@
     "multer": "^1.4.5-lts.1",
     "nocache": "^3.0.4",
     "nodemon": "^2.0.22",
-    "objectid": "^3.2.1"
+    "objectid": "^3.2.1",
+    "twilio": "^4.10.0"
   }
 }

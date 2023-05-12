@@ -1,0 +1,90 @@
+<main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
+  <div class="container d-flex justify-content-center align-items-center">
+    <div class="card login-card " style="width: 700px;">
+      <div class="row no-gutters">
+        <div class="col-md-5">
+          <img src="/images/peakpx.jpg" alt="login" class="login-card-img" style="padding-top: -40px;">
+        </div>
+        <div class="col-md-7">
+          <div class="card-body">
+            <div class="brand-wrapper">
+              <img src="/images/logo2 copy.png" alt="logo" class="logo">
+            </div>
+            <p class="login-card-description">OTP Verification</p>
+            <a href="" class="text-danger">code send to your <%= mobile%></a>
+
+            <form action="/otpVerify" method="post">
+              <div class="form-group">
+                <input hidden name="mobile" value="<%= mobile%>">
+                <!-- <label for="email"  class="sr-only">Email</label> -->
+                <input type="number" name="otp" id="otp" class="form-control" placeholder="Enter your OTP here ...">
+              </div>
+              <div>
+                <div id="countdown-timer" style="width: 130px;">Time Left: 1:00</div>
+                <a class="text-right text-primary p-1 cursor" href="/sendOTP"  style="width: 70px; margin-left: 180px; margin-top: -25px;">Resend OTP</a>
+              </div>
+              <input id="login" class="btn btn-block login-btn mb-4" type="submit" value="verify">
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="card login-card">
+        <img src="assets/images/login.jpg" alt="login" class="login-card-img">
+        <div class="card-body">
+          <h2 class="login-card-title">Login</h2>
+          <p class="login-card-description">Sign in to your account to continue.</p>
+          <form action="#!">
+            <div class="form-group">
+              <label for="email" class="sr-only">Email</label>
+              <input type="email" name="email" id="email" class="form-control" placeholder="Email">
+            </div>
+            <div class="form-group">
+              <label for="password" class="sr-only">Password</label>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+            </div>
+            <div class="form-prompt-wrapper">
+              <div class="custom-control custom-checkbox login-card-check-box">
+                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <label class="custom-control-label" for="customCheck1">Remember me</label>
+              </div>              
+              <a href="#!" class="text-reset">Forgot password?</a>
+            </div>
+            <input name="login" id="login" class="btn btn-block login-btn mb-4" type="button" value="Login">
+          </form>
+          <p class="login-card-footer-text">Don't have an account? <a href="#!" class="text-reset">Register here</a></p>
+        </div>
+      </div> -->
+  </div>
+</main>
+
+<script>
+  // Set the time limit for the OTP verification (in seconds)
+  const timeLimit = 60;
+
+  // Get the countdown timer element
+  const countdownTimer = document.getElementById("countdown-timer");
+
+  // Initialize the timer value
+  let timerValue = timeLimit;
+
+  // Update the timer value every second
+  const countdownInterval = setInterval(() => {
+    timerValue--;
+    const minutes = Math.floor(timerValue / 60);
+    const seconds = timerValue % 60;
+    countdownTimer.innerHTML = `Time Left: ${minutes}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+
+    // If the timer reaches zero, clear the interval and disable the form
+    if (timerValue === 0) {
+      clearInterval(countdownInterval);
+      document.getElementById("otp").disabled = true;
+      document.querySelector('button[type="submit"]').disabled = true;
+      countdownTimer.innerHTML = "Time's up!";
+    }
+  }, 1000);
+</script>

@@ -1,7 +1,7 @@
 const db=require('../config/connection');
 const collection=require('../config/collections');
 const bcrypt=require('bcrypt');
-const { get } = require('../app');
+const { get, response } = require('../app');
 const { ObjectId } = require('mongodb');
 
 module.exports={
@@ -56,5 +56,45 @@ module.exports={
         })
         
 
+    },
+    otpnosend:(mobile)=>{
+        return new Promise(async(resolve,reject)=>{
+            // mobile=mobile.replace("+91","")
+            mobile=Number(mobile)
+            let response={}
+            let user= await db.get().collection(collection.USER_COLLECTION).findOne({phone:mobile})
+            if(user){
+                response.user=user;
+                response.status=true;
+                response.isBlocked=user.isblocked;
+                resolve(response);
+            }
+            else{
+                response.status=false;
+                resolve(response);
+                console.log(response);
+            }
+        })
+    },
+    GetCart:()=>{
+        
+    },
+    AddCart:(productId,userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            console.log(productId,"/////////////////////////");
+            let userdata= await db.get().collection(collection.CART_COLLECTION).findOne({user:ObjectId(userId)})
+            if(userdata){
+
+            }
+            else{
+                let cartobj={
+                    user:ObjectId(userId),
+                    products:[ObjectId(productId)]
+                }
+                db.get().collection(collection.CART_COLLECTION).insertOne({cartobj}).then((response)=>{
+                    resolve()
+                })
+            }
+        })
     }
 }

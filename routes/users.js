@@ -13,5 +13,10 @@ router.post("/signup",usercontroller.SignUppost)
 router.get("/logout",usercontroller.Logoutget)
 router.get('/view-products',middleware.checkUserLoggedIn,usercontroller.GetViewProducts)
 router.get('/singleproductview/:id',middleware.checkUserLoggedIn,usercontroller.singleproductview)
+router.get('/otplogin',middleware.sessionHandle,usercontroller.Getotplogin)
+router.post('/sendOTP', usercontroller.sendOtp);
+router.post('/otpVerify',middleware.checkUserLoggedIn, usercontroller.verifyOtp);
+router.get('/cart',middleware.checkUserLoggedIn,usercontroller.getcart)
+router.get('/addtocart/:id',middleware.sessionHandle,usercontroller.addcart)
 
 module.exports = router;
