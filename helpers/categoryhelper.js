@@ -1,33 +1,43 @@
 const db = require('../config/connection');
 const collection = require('../config/collections');
-// const bcrypt = require('bcrypt');
-// const Id = require('objectid');
-// const { orderdetails } = require('../controllers/admincontrollers');
 const objectId = require('mongodb-legacy').ObjectId;
 
-module.exports={
+module.exports = {
     AddCategory_Post: (categoryData) => {
-        console.log(categoryData);
-        categoryData.categorystatus = true;
-        db.get().collection(collection.PRODUCT_CATEGORY).insertOne(categoryData)
+        return new Promise(async (resolve, reject) => {
+            const categoryexists = await db.get().collection(collection.PRODUCT_CATEGORY).findOne({
+                category_list: { $regex: `^${categoryData.category_list}$`, $options: 'i' }
+            })
+            if (categoryexists) {
+                resolve({ status: false });
+            } else {
+                categoryData.categorystatus = true;
+                db.get().collection(collection.PRODUCT_CATEGORY).insertOne(categoryData)
+                resolve({status:true})
+            }
+        })
     },
     AdminProductCategory: () => {
         return new Promise(async (resolve, reject) => {
-            let category = await db.get().collection(collection.PRODUCT_CATEGORY).find().toArray()
-            console.log(category);
+            const category = await db.get().collection(collection.PRODUCT_CATEGORY).find().toArray()
             resolve(category);
         })
     },
     PostEditCategory: (categoryData, categoryId) => {
-        return new Promise((resolve, reject) => {
-            db.get().collection(collection.PRODUCT_CATEGORY).updateOne({ _id: new objectId(categoryId) }, {
-                $set: {
-                    category_list: categoryData.category_list
-                }
-            }).then((response) => {
-                console.log(response);
-                resolve(response);
+        return new Promise(async(resolve, reject) => {
+            const categoryexist = await db.get().collection(collection.PRODUCT_CATEGORY).findOne({
+                category_list: { $regex: `^${categoryData}$`, $options: 'i' }
             })
+            if (categoryexist) {
+                resolve({ status: false });
+            } else {
+                db.get().collection(collection.PRODUCT_CATEGORY).updateOne({ _id: new objectId(categoryId) }, {
+                    $set: {
+                        category_list: categoryData
+                    }
+                })
+                resolve({status:true})
+            }
         })
     },
     ListCategory: (categoryId) => {

@@ -45,8 +45,6 @@
             <button type="button" class="btn black-btn btn-block" data-toggle="modal" data-target="#exampleModalCenter">
               ADD ADDRESS
             </button>
-            <!-- <h6 class="coupon__code"><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click
-                            here</a> to enter your code</h6> -->
 
             <table class="table mt-3 p-3 table-bordered " style="background-color: #f3f2ee;;">
               <thead>
@@ -88,21 +86,19 @@
               <h6 style="margin-bottom: 1rem; color: #111111;font-weight: 700;text-transform: uppercase;">Discount codes
               </h6>
               <form>
-                <!-- <input type="text" placeholder="Coupon code" id="coupon" style="width: 18rem;padding: 0.6rem;"> -->
                 <input class="stext-104 cl2 plh4 size-117 bor13 p-lr-20 m-r-10 m-tb-5"
-                  style="width: 538px; text-align: center;" type="text" name="coupon" placeholder="Coupon Code">
-                <!-- <button type="button" class="btn-dark" id="applyCoupon"
-                  style="padding: 0.6rem;width: 7rem;font-weight: 700;">Apply</button> -->
-                <div class="flex-c-m stext-101 cl2 size-118 black-btn  bor13 hov-btn3 p-lr-15 trans-04 pointer  m-tb-5">
+                  style="width: 538px; text-align: center;" id="coupon" type="text" name="coupon"
+                  placeholder="Coupon Code">
+                <div id="applyCoupon"
+                  class="flex-c-m stext-101 cl2 size-118 black-btn  bor13 hov-btn3 p-lr-15 trans-04 pointer  m-tb-5">
                   Apply coupon</div>
+                <span id="invalidCoupon" class="text-danger"></span>
               </form>
 
               <div style="display: none;" id="errorCoupon">
                 <h5 class="text-danger">invalid coupon</h5>
               </div>
             </div>
-
-
             <div class="checkout__order" style="background-color: #f3f2ee; padding: 30px;">
               <div class="table-responsive"></div>
               <table class="table table-bordered ">
@@ -114,7 +110,6 @@
                     <th scope="col">quantity</th>
                     <th scope="col">price</th>
                     <th scope="col">subtotal</th>
-
                   </tr>
                 </thead>
                 <tbody>
@@ -147,8 +142,8 @@
                   </span>
                 </li>
                 <li style="list-style: none;font-size: 16px;color: #111111;line-height: 40px;overflow: hidden;">
-                  OfferPrice <span class="text-dark" style="font-weight: 700;float: right;"
-                    id="offerPrice">₹000.00</span></li>
+                  Discount<span class="text-dark" style="font-weight: 700;float: right;" id="couponPrice">₹000.00</span>
+                </li>
                 <li style="list-style: none;font-size: 16px;color: #111111;line-height: 40px;overflow: hidden;">Total
                   <span class="text-dark" style="font-weight: 700;float: right;" id="grandTotal">
                     <%=locals.totalprice%>
@@ -217,19 +212,19 @@
           <div class="form-row">
             <div class="form-group col-md-12">
               <label for="Name">Name</label>
-              <input type="text" class="form-control" name="name" id="firstName" placeholder="Name">
+              <input type="text" class="form-control" name="name" id="firstName" placeholder="Name" required>
             </div>
 
           </div>
           <div class="form-group">
             <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address">
+            <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address" required>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="inputState">District</label>
               <select id="" class="form-control" name="district" required>
-                <option value=""> Select district</option>
+                <option value="" selected disabled> Select district</option>
                 <option>Alappuzha</option>
                 <option>Kollam</option>
                 <option>Pathanamthitta</option>
@@ -240,7 +235,7 @@
             </div>
             <div class="form-group col-md-6">
               <label for="inputZip">City</label>
-              <input type="text" class="form-control" name="city">
+              <input type="text" class="form-control" name="city" required>
             </div>
           </div>
 
@@ -248,11 +243,11 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="forPincode">pincode</label>
-              <input type="text" class="form-control" name="pincode">
+              <input type="text" class="form-control" name="pincode" required>
             </div>
             <div class="form-group col-md-6">
               <label for="phone">phone</label>
-              <input type="text" class="form-control" name="phone" minlength="10" maxlength="10">
+              <input type="text" class="form-control" name="phone" minlength="10" maxlength="10" required>
             </div>
           </div>
           <hr>
@@ -262,84 +257,17 @@
           </div>
         </form>
       </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div> -->
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<!-- <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header mt-5">
-        <h5 class="modal-title" id="exampleModalCenterTitle"><span style="font-weight: 900;">ADD ADDRESS</span></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="/add-address" method="post" class="p-4">
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label for="Name">Name</label>
-              <input type="text" class="form-control" name="name" id="firstName" placeholder="Name">
-            </div>
 
-          </div>
-          <div class="form-group">
-            <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" name="address" placeholder="address">
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="inputState">District</label>
-              <select id="" class="form-control" name="district" required>
-                <option value=""> Select district</option>
-                <option>Alappuzha</option>
-                <option>Kollam</option>
-                <option>Pathanamthitta</option>
-                <option>Trivandrum</option>
-                <option>Ernakulam</option>
-                <option>Thrissur</option>
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="inputZip">City</label>
-              <input type="text" class="form-control" name="city">
-            </div>
-          </div>
-
-
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="forPincode">pincode</label>
-              <input type="text" class="form-control" name="pincode">
-            </div>
-            <div class="form-group col-md-6">
-              <label for="phone">phone</label>
-              <input type="text" class="form-control" name="phone" minlength="10" maxlength="10">
-            </div>
-          </div>
-          <hr>
-          <div style="margin-left: 73%;">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div> -->
 <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-  var clicked = true
+  let clicked = true
   document.getElementById('onlinepaymentbtn').addEventListener('click', () => {
 
     if (clicked) {
@@ -361,109 +289,156 @@
   })
 
   const placeorder = () => {
+
     let GrandTotal = document.getElementById('grandTotal').innerText
     GrandTotal = GrandTotal.replace(/,/g, "")
     GrandTotal = GrandTotal.replace('₹', '')
     GrandTotal = parseInt(GrandTotal)
 
-    // console.log(GrandTotal, '////////////////////////');
-    // console.log(products,'333333333333333333333333333333');
-    // console.log(addressid,'777777777777777777777777777777');
-    // console.log(paymentMethod,'awsedrftgvbhnjmk,lsderftghnjmk');
-
-    if (addressid && paymentMethod && subtotal) {
-      // console.log("hfghhg",products);
-      var orderDetails = { products, addressid, paymentMethod, subtotal, GrandTotal }
-      $.ajax({
-        url: '/placeorder',
-        method: 'post',
-        data: {
-          addressid,
-          paymentMethod,
-          subtotal,
-          GrandTotal
-        },
-        success: (response) => {
-          if (response.status === 'out of stock') {
-            // console.log("out of stock");
-            Swal.fire({
-              icon: 'error',
-              title: 'out of stock',
-              text: `${response.product} is out of stock, ${response.product_quantuty} products only left`,
-            })
-          }
-          else if (paymentMethod === 'cod') {
-            if (response.status === 'success') {
-              location.assign(`/order-success?orderId=${response.orderId}`)
-
-            }
-          } else if (paymentMethod === 'razorpay') {
-
-
-            console.log("razproduct", orderDetails);
-            localStorage.setItem('order', JSON.stringify(orderDetails))
-            razorpayPayment(response)
-            // console.log(response.amount,"aaaaaaaaaamount");
-
-
-          }
-        }
+    if (paymentMethod === 'wallet' && walletAmount < GrandTotal) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'check your wallet amount!',
       })
     }
     else {
-      Swal.fire({
-        icon: 'error',
-        // title: 'Oops...',
-        text: 'All Fields  are Required !',
-      })
+      if (addressid && paymentMethod && subtotal) {
+        var orderDetails = { products, addressid, paymentMethod, subtotal, GrandTotal, coupon }
+        $.ajax({
+          url: '/placeorder',
+          method: 'post',
+          data: {
+            addressid,
+            paymentMethod,
+            subtotal,
+            GrandTotal,
+            coupon
+          },
+          success: (response) => {
+            if (response.status === 'out of stock') {
+              Swal.fire({
+                icon: 'error',
+                title: 'out of stock',
+                text: `${response.product} is out of stock, ${response.product_quantuty} products only left`,
+              })
+            }
+            else if (paymentMethod === 'cod') {
+              if (response.status === 'success') {
+                location.assign(`/order-success?orderId=${response.orderId}`)
+              }
+            } else if (paymentMethod === 'razorpay') {
+              localStorage.setItem('order', JSON.stringify(orderDetails))
+              razorpayPayment(response)
+            }
+            else if (paymentMethod === 'wallet') {
+              if (response.status === 'success') {
+                Swal.fire({
+                  position: 'top-center',
+                  icon: 'success',
+                  title: 'Wallet Payment is Successfull',
+                  showConfirmButton: false,
+                  timer: 2500
+                })
+                setTimeout(function () {
+                  location.assign(`/order-success?orderId=${response.orderId}`)
+                }, 2500)
+              }
+            }
+          }
+        })
+      }
+      else {
+        Swal.fire({
+          icon: 'error',
+          text: 'All Fields  are Required !',
+        })
+      }
     }
 
+
   }
-  // console.log('HELLO');
-  var addressid
-
+  let addressid
   const addressId = document.querySelectorAll('.address')
-
   addressId.forEach(function (address) {
     address.addEventListener('click', function () {
       addressid = this.value
     })
   })
-
   const productId = []
   const quantity = []
-
   document.querySelectorAll('.productid').forEach(function (product) {
     productId.push(product.dataset.productid)
   })
-
   document.querySelectorAll('.Quantity').forEach(function (product) {
     quantity.push(Number(product.dataset.quantity))
   })
-
-
-  var products = []
-
+  let products = []
   for (let i = 0; i < productId.length; i++) {
     product = { productId: productId[i], quantity: quantity[i] }
     products.push(product)
   }
-  console.log(products);
 
-
-  var subtotal = document.querySelector('#Total').innerText
+  let subtotal = document.querySelector('#Total').innerText
   subtotal = subtotal.replace(/,/g, "")
   subtotal = subtotal.replace('₹', '')
   subtotal = parseInt(subtotal)
 
-  var paymentMethod
+  let walletAmount
+  let paymentMethod
   document.querySelectorAll('.payment').forEach(function (payment) {
     payment.addEventListener('click', function () {
       paymentMethod = this.value
+      if (paymentMethod === 'wallet') {
+        walletAmount = this.dataset.walletamount
+      }
     })
   })
-
-
+  let isclicked = false
+  let coupon
+  document.getElementById('applyCoupon').addEventListener('click', function () {
+    coupon = document.getElementById('coupon').value
+    if (!isclicked) {
+      applyCoupon(coupon)
+    }
+  })
+</script>
+<script>
+  const applyCoupon = async (coupon) => {
+    $.ajax({
+      url: '/couponapply',
+      type: 'post',
+      data: { coupon },
+      success: function (response) {
+        let coupon = response.coupon;
+        if (response.status === 'success') {
+          if (response.used === true) {
+            document.getElementById('invalidCoupon').innerHTML = response.message;
+          } else if (coupon.status === 'EXPIRED') {
+            let coupon = response.coupon;
+            document.getElementById('invalidCoupon').innerHTML = "Expired coupon";
+          } else {
+            isclicked = true
+            let GrandTotal = document.getElementById('grandTotal').innerText
+            GrandTotal = GrandTotal.replace(/,/g, "")
+            GrandTotal = GrandTotal.replace('₹', '')
+            GrandTotal = parseInt(GrandTotal)
+            const couponAmt = parseInt(coupon.discount);
+            GrandTotal = parseInt(GrandTotal) - couponAmt;
+            document.getElementById('invalidCoupon').innerHTML = "";
+            document.getElementById('grandTotal').innerHTML = GrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            document.getElementById('couponPrice').innerHTML = couponAmt.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            $('#couponCode').val(code);
+          }
+        } else {
+          document.getElementById('invalidCoupon').innerHTML = response.message;
+        }
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    });
+  }
 </script>
 <script>
   const razorpayPayment = (responses) => {
@@ -476,10 +451,7 @@
       // "image": "https://example.com/your_logo",
       "order_id": responses.razorpayId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
       "handler": function (response) {
-        // alert(response.razorpay_payment_id);
-        // alert(response.razorpay_order_id);
-        // alert(response.razorpay_signature)
-        verifyRazoPayment(response, responses.orderId, responses.amount)
+        verifyRazoPayment(response, responses.orderId, responses.amount, coupon)
       },
       "prefill": {
         "name": responses.name, //your customer's name
@@ -497,25 +469,18 @@
     rzp1.open();
   }
 
-
-  const verifyRazoPayment = async (razorResponse, orderId, amount) => {
-
+  const verifyRazoPayment = async (razorResponse, orderId, amount, coupon) => {
     try {
       const order = JSON.parse(localStorage.getItem('order'))
       const res = await axios({
         method: 'POST',
         url: '/verify-payment',
-        data: { razorResponse, orderId, amount, order }
+        data: { razorResponse, orderId, amount, order, coupon }
       })
-      // console.log(res);
-
       if (res.data.status === 'success') {
-       
         setTimeout(function () {
-          // console.log(res.data.orderId);
           location.assign(`/order-success?orderId=${res.data.orderId}`)
         }, 1000)
-
       } else {
         Swal.fire({
           position: 'top-center',
@@ -524,13 +489,9 @@
           showConfirmButton: false,
           timer: 3000
         })
-
       }
-
-
     } catch (err) {
       console.log(err);
     }
-
   }
 </script>

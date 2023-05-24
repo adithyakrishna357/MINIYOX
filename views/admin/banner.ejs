@@ -1,0 +1,143 @@
+<main class="main-wrap">
+  <section>
+    <div class="container">
+      <div class="content-header mt-30">
+        <div>
+          <h2 class="content-title card-title">Banner </h2>
+        </div>
+
+        <!-- Button trigger modal -->
+        <div class="">
+
+          <button type="button" class="btn btn-primary"><a href="/admin/addbanner" style="color: #fff;">Add Banner</a>
+          </button>
+        </div>
+        <!-- Modal -->
+
+      </div>
+      <table class="table table-striped table-bordered table-responsive mt-5 display" style="padding-top:30px;"
+        id="bannerTable">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Image</th>
+            <th scope="col">Banner Head</th>
+            <th scope="col">Banner text</th>
+            <!-- {{!-- <th scope="col">Update</th> --}} -->
+            <th scope="col">status</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i=0; i < banner.length; i++) { %>
+            <tr>
+              <th scope="row">
+                <%= i+1 %>
+              </th>
+              <td>
+                <img src="<%= banner[i].image %>" alt="" width="100px" height="70px" />
+              </td>
+              <td>
+                <%= banner[i].head %>
+              </td>
+              <td>
+                <%= banner[i].text %>
+              </td>
+              <!-- <td><a href="/admin/edit-banner/<%= banner[i]._id %>" class="btn btn-primary btn-sm"
+                  style="width: 100px;height:35px;">EDIT</a>
+              </td> -->
+              <!-- {{!-- <td><a href="" class="btn btn-primary btn-sm" style="width: 100px;height:35px;" data-toggle="modal"
+                  data-target="#exampleModalCenterBannerEdit{{this._id}}">EDIT</a>
+              </td> --}} -->
+              <% if (banner[i].status) { %>
+                <td>
+                  <a href="/admin/unlistbanner/<%= banner[i]._id %>" class="btn btn-danger btn-sm">UNLIST</a>
+                </td>
+                <% } else { %>
+                  <td>
+                    <a href="/admin/listbanner/<%= banner[i]._id %>" class="btn btn-danger btn-sm">LISTED</a>
+                  </td>
+                  <% } %>
+                    <td>
+                      <a href="/admin/deletebanner/<%= banner[i]._id %>" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Do you want to delete?')">Delete</a>
+                    </td>
+
+            </tr>
+            <% } %>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    </div>
+  </section>
+</main>
+
+
+{{!-- <!-- Modal Edit Banner-->
+<div class="modal fade" id="exampleModalCenterBannerEdit{{this._id}}" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit Banner</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/admin/edit-banner/{{this._id}}" method="post">
+          <div class="rows">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+              <h4 class="text-primary">Edit Banners</h4>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="fullName">Banner Image</label>
+                <input type="file" class="form-control" id="fullName" value="{{this}}" name="image" />
+              </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="eMail">Bannner Head</label>
+                <input type="text" class="form-control" id="head" name="head" value="{{this.head}}" />
+              </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+              <div class="form-group">
+                <label for="eMail">Banner text</label>
+                <input type="text" class="form-control" id="text" name="text" value="{{this.text}}" />
+              </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+              <div class="text-right mt-3">
+
+                {{! <button type="submit" id="submit" class="btn-primary p-2">Update</button> }}
+                <button type="submit" class="btn btn-primary btn-block">Update</button>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div> --}}
+
+<script>
+
+  $(document).ready(function () {
+    $('#bannerTable').DataTable({
+      "paging": true,   // enable pagination
+      "ordering": true, // enable sorting
+      "searching": true // enable searching
+    });
+  });
+</script>

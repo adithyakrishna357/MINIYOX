@@ -230,6 +230,18 @@
         margin-right: 5px;
     }
 </style>
+<style>
+    img {
+        max-width: 100%;
+    }
+
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+</style>
 
 <div class="container">
     <div class="p-b-10">
@@ -290,76 +302,32 @@
         </div>
         <div class="col-md-9">
             <div class="profile-content">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Profile Information</h5>
-                    </div>
-                    <div class="modal-body">
-                        <form action="/profileinformation/<%=userDetails._id%>" method="post">
-                            <div class="form-group">
-                                <label for="inputAddress">Full Name</label>
-                                <input type="text" class="form-control" name="name" id="inputAddress"
-                                    placeholder="first name" value="<%=userDetails.name%>">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4">
+                        <div class="card" style="background-color: #1b223c;">
+                            <a class="img-card"
+                                href="http://www.fostrap.com/2016/03/bootstrap-3-carousel-fade-effect.html">
+                                <img src="images/wallet.png" />
+                            </a>
+                            <div class="card-content" style="margin-top: 25px;">
+                                <h4 class="card-title">
+                                    <a style="font-size: 21px; color: rgb(179, 142, 31);" href="http://www.fostrap.com/2016/03/bootstrap-3-carousel-fade-effect.html">
+                                        My Wallet
+                                    </a>
+                                </h4>
+                                <p class="">Total Wallet Amount : ₹<%=wallet.amount%></p>
                             </div>
-                            <div class="form-group">
-                                <label for="inputEmail4">Email</label>
-                                <input type="email" class="form-control" id="inputEmail4" name="email"
-                                    placeholder="Email" value="<%=userDetails.email%>">
+                            <br><br>
+                            <div class="card-read-more">
+                                <a href="/" class="btn btn-link btn-block" style="color: rgb(233, 141, 75);">
+                                    Continue shopping!!!
+                                </a>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">Phone No.</label>
-                                    <input type="phone" class="form-control" name="phone" id="inputEmail4"
-                                        placeholder="Phone" value="<%=userDetails.phone%>">
-                                </div>
-                            </div>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-                        <input type="submit" class="btn btn-primary" value="update"
-                            style="background-color: rgb(157,49,102);border-color:rgb(157,49,102)">
-                    </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
-<div class=" modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Profile Information</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="/admin/addAddress/{{user._id}}" method="post">
-                    <div class="form-group">
-                        <label for="inputAddress">First Name</label>
-                        <input type="text" class="form-control" id="inputAddress" placeholder="first name">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputEmail4">Email</label>
-                        <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="inputEmail4">Phone No.</label>
-                            <input type="phone" class="form-control" id="inputEmail4" placeholder="Phone">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary"
-                    style="background-color: rgb(157,49,102);border-color:rgb(157,49,102)">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>

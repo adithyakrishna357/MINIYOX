@@ -10,50 +10,6 @@
                     <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Add Product</a>
                 </div>
             </div>
-            <!-- <div class="card mb-4">
-                
-                <div class="card-body">
-                    <% for (var i=0; i < products.length; i++) { %>
-                    <article class="itemlist">
-                        <div class="row align-items-center">
-                            
-                            <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name" style="width: 200px;">
-                                <a class="itemside" href="#">
-                                    <div class="left">
-                                        <img src="<%= products[i].image[0]%>" class="img-sm img-thumbnail" alt="Item">
-                                    </div>
-                                    <div class="info">
-                                        <h6 class="mb-0"><%= products[i].product_name%></h6>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-4 col-price" style="margin-right: 48px;"> <span><%= products[i].product_description %></span> </div>
-                            <div class="col-lg-1 col-sm-2 col-4 col-date" >
-                                <span>₹ <%= products[i].product_price %></span>
-                            </div>
-                            <% if (products[i].productstatus) { %> 
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <a href="/admin/listproduct/<%=products[i]._id%>" class="btn btn-sm font-sm rounded btn-danger" style="margin-left: 70px;">
-                                        <i class="material-icons md-edit"></i> List
-                                    </a>
-                                </div>
-                            <% } else { %>
-                                <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                    <a href="/admin/unlistproduct/<%=products[i]._id%>" class="btn btn-sm font-sm rounded btn-danger" style="margin-left: 70px;">
-                                        <i class="material-icons md-edit"></i> Unlist
-                                    </a>
-                                </div>
-                            <% } %>
-                            <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                                <a href="/admin/editproduct/<%=products[i]._id%>" class="btn btn-sm font-sm rounded btn-brand" style="margin-right: 70px;">
-                                    <i class="material-icons md-edit"></i> Edit
-                                </a>
-                            </div> -->
-                        <!-- </div> row .// -->
-                    <!-- </article> itemlist  .// -->
-                    <!-- <% } %> -->
-                <!-- </div> card-body end// -->
-            <!-- </div> card end// -->
             <table class="table table-hover" id="myTable">
                 <thead>
                     <tr>
@@ -75,10 +31,10 @@
                                 <%= i+1 %>
                             </td>
                             <td><b>
-                                <img src="<%= products[i].image[0]%>" class="img-sm img-thumbnail" alt="Item">
+                                <img src="<%= products[i].image[0]%>" style="width: 60px; height: 60px;" class="img-sm img-thumbnail" alt="Item">
                                 </b></td>
                                 <td>
-                                    <h6 class="mb-0"><%= products[i].product_name%></h6>
+                                    <h6 class="mb-0"><%= products[i].product_name.slice(0,10) %>...</h6>
                                 </td>
                                 <td>
                                     <span>₹ <%= products[i].product_price %></span>
@@ -111,18 +67,6 @@
                         <% } %>
                 </tbody>
             </table>
-            <!-- <div class="pagination-area mt-30 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div> -->
         </section> <!-- content-main end// -->
     </main>
 

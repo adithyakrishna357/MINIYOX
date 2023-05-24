@@ -35,8 +35,19 @@ router.post('/forgototpsendotp',usercontroller.forgotsendotp)
 router.post('/forgototpVerify',usercontroller.forgotverifyotp);
 router.post('/resetpassword/:id',usercontroller.resetpassword)
 router.get('/changepassword',middleware.checkUserLoggedIn,usercontroller.changepassword)
-router.post('/changepassword',usercontroller.changepasswordpost)
+router.post('/changepassword',middleware.checkUserLoggedIn,usercontroller.changepasswordpost)
 router.post('/verify-payment',middleware.checkUserLoggedIn,usercontroller.verifypayment)
+router.get('/manageaddress',middleware.checkUserLoggedIn,usercontroller.manageaddress)
+router.post('/manageadd-address',middleware.checkUserLoggedIn,usercontroller.manageaddaddress)
+router.post('/editaddress/:id',middleware.checkUserLoggedIn,usercontroller.editaddress)
+router.get('/remove-address/:id',middleware.checkUserLoggedIn,usercontroller.removeaddress)
+router.post('/search',usercontroller.search)
+router.get('/addtowish/:id',middleware.checkUserLoggedIn,usercontroller.addtowish)
+router.get('/wishlist',middleware.checkUserLoggedIn,usercontroller.wishlistdetails)
+router.get('/removewhislistproduct/:id',usercontroller.removewishlistproduct)
+router.post('/couponapply',middleware.checkUserLoggedIn,usercontroller.couponapply)
+router.get('/wallet',middleware.checkUserLoggedIn,usercontroller.getwallet)
+
 
 
 module.exports = router;

@@ -20,8 +20,6 @@ module.exports = {
         }
     },
     VerifyPayment : (razorResponse)=>{
-        //   console.log("verify heee");
-        //  console.log("heee util",process.env.RAZORPAY_KEY_ID);
         console.log(razorResponse);
     
         let hmac = crypto.createHmac('sha256','ockRQ94WKNVoPPqj4YFxrTki')

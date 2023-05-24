@@ -21,6 +21,9 @@
                                 <h3 class="text-uppercase" style="font-size:21px;">SignUp to <strong>MINIYOX</strong>
                                 </h3>
                             </div>
+                            <% if (messaGe) { %>
+                                <div class="alert alert-danger"><%= messaGe %></div>
+                            <% } %>
                             <form action="/signup" method="post">
                                 <div class="form-group last mb-3">
                                     <label for="name">Name</label>
@@ -74,16 +77,16 @@
     <script>
         // USER SIGNUP VALIDATION
 
-        var nameError = document.getElementById('name-error');
-        var emailError = document.getElementById('email-error');
-        var passwordError = document.getElementById('password-error');
-        var repasswordError = document.getElementById('repassword-error');
+        const nameError = document.getElementById('name-error');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+        const repasswordError = document.getElementById('repassword-error');
         // var phoneError = document.getElementById('phone-error');
-        var submitError = document.getElementById('submit-error');
-        var mobileNoError = document.getElementById('mobileNo-error');
+        const submitError = document.getElementById('submit-error');
+        const mobileNoError = document.getElementById('mobileNo-error');
 
         function validateName() {
-            var name = document.getElementById('name').value;
+            const name = document.getElementById('name').value;
             if (name.length == 0) {
                 nameError.innerHTML = 'Name is required';
                 return false;
@@ -97,7 +100,7 @@
         }
 
         function validateEmail() {
-            var email = document.getElementById('email').value;
+            const email = document.getElementById('email').value;
             if (email.length == 0) {
                 emailError.innerHTML = 'Email is required';
                 return false;
@@ -111,8 +114,8 @@
         }
 
         function validatePassword() {
-            var password = document.getElementById('password').value;
-            var passChecker = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+            const password = document.getElementById('password').value;
+            const passChecker = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
             if (password.match(passChecker)) {
                 passwordError.innerHTML = '';
                 return true;
@@ -123,8 +126,8 @@
         }
 
         function validateRePassword() {
-            var password = document.getElementById('password').value;
-            var repassword = document.getElementById('repassword').value;
+            const password = document.getElementById('password').value;
+            const repassword = document.getElementById('repassword').value;
             if (password !== repassword) {
                 repasswordError.innerHTML = "password doesn't match";
                 return false
@@ -134,27 +137,10 @@
             }
         }
 
-        // function validateMobileNumber() {
-        //     var phone = document.getElementById('phone').value;
-        //     if (phone.length == 0) {
-        //         phoneError.innerHTML = 'Mobile number is required';
-        //         return false;
-        //     } else if (phone.length > 10) {
-        //         phoneError.innerHTML = "Max limit exceeded";
-        //         return false;
-        //     } else if (phone.length === 10) {
-        //         phoneError.innerHTML = " ";
-        //         return true;
-        //     }else if (!mobileNo.match(/^\d{10}$/)) {
-        //         mobileNoError.innerHTML = "Invalid Mobile Number"
-        //         return false
-        //     }
-        //     mobileNoError.innerHTML = ""
-        //     return true
-        // }
+        
 
         function validateMobileNumber(){
-            let mobileNo = document.getElementById("phone").value
+            const mobileNo = document.getElementById("phone").value
             if (mobileNo.length == 0) {
                 mobileNoError.innerHTML = "Mobile Number is required";
                 return false

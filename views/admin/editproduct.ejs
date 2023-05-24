@@ -10,32 +10,41 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3" style="width: 601px;">
-                        <form action="/admin/editproduct/<%=product._id%>"  method="post" enctype="multipart/form-data" >
+                        <form action="/admin/editproduct/<%=product._id%>" id="checkout-form" method="post"
+                            enctype="multipart/form-data">
                             <div class="mb-4">
-                                <label for="product_name"  class="form-label">Product Name</label>
-                                <input type="text"  name="product_name" value="<%=product.product_name%>" class="form-control" id="product_name" />
+                                <label for="product_name" class="form-label">Product Name</label>
+                                <input type="text" name="product_name" value="<%=product.product_name%>" required
+                                    class="form-control" id="product_name" />
                             </div>
                             <div class="mb-4">
-                                <label for="product_slug"  class="form-label">Description</label>
-                                <input type="text" value="<%=product.product_description%>" name="product_description" class="form-control" id="product_slug" />
+                                <label for="product_slug" class="form-label">Description</label>
+                                <input type="text" value="<%=product.product_description%>" name="product_description"
+                                    required class="form-control" id="product_slug" />
                             </div>
                             <div class="mb-4">
-                                    <label class="form-label" >Category</label>  
-                                    <select class="form-select" name="product_category">
-                                        <!-- <option><%= product.product_category %></option> -->
-                                        <% for (var i=0; i < categorie.length; i++) { %>
-                                        <option><%= categorie[i].category_list %></option>
-                                        <% } %>
-                                    </select>
-                                    
+                                <label class="form-label">Category</label>
+                                <select class="form-select"   required name="product_category">
+                                    <option selected disabled >Select a Category</option>
+                                    <% for (var i=0; i < categorie.length; i++) { %>
+                                        <% if (categorie[i].categorystatus) { %>
+                                            <option value="<%= categorie[i]._id %>">
+                                                <%= categorie[i].category_list %>
+                                            </option>
+                                            <% } %>
+                                                <% } %>
+                                </select>
+
                             </div>
                             <div class="mb-4">
-                                <label class="form-label" >Price</label>
-                                <input type="number" value="<%=product.product_price%>" class="form-control" name="product_price" >
+                                <label class="form-label">Price</label>
+                                <input type="number" required value="<%=product.product_price%>" class="form-control"
+                                    name="product_price">
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Stock</label>
-                                <input type="number" value="<%=product.stock%>" class="form-control" name="stock">
+                                <input type="number" value="<%=product.stock%>" required class="form-control"
+                                    name="stock">
                             </div>
                             <div class="d-grid">
                                 <button class="btn btn-primary" type="submit">Submit</button>
@@ -49,21 +58,94 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label class="form-label"></label>
-                                        <% product.image.forEach((image)=>{%>
-                                        <img
-                                          src="<%=image %>"
-                                          alt=""
-                                          style="width: 100px; height: auto"
-                                        />
+                                    <% product.image.forEach((image)=>{%>
+                                        <!-- <img src="" class="preview" style="width: 100px; height: auto" /> -->
+                                        <input class="form-control" type="file" required name="image"
+                                            accept="image/jpeg,image/png" onchange="previewImage(event)" />
+                                        <img class="preview" src="<%=image %>" style="width: 300px; height: inherit" />
                                         <%})%>
-                                    <input class="form-control" type="file" name="image" multiple>
                                 </div>
                             </div>
                         </div> <!-- card end// -->
                     </div> <!-- .col// -->
-                </form>
+                    </form>
                 </div> <!-- .row // -->
             </div> <!-- card body .// -->
         </div> <!-- card .// -->
     </section> <!-- content-main end// -->
 </main>
+
+<script>
+
+
+    function previewImage(event) {
+        const input = event.target;
+
+        let preview = input.nextElementSibling;
+
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+
+            reader.onload = function () {
+                preview.src = reader.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    $(document).ready(function () {
+        $("#checkout-form").validate({
+            rules: {
+                product_name: {
+                    required: true,
+                    minlength: 6,
+                },
+                product_category: {
+                    required: true,
+                },
+                product_price: {
+                    required: true,
+                    number: true,
+                    min: 0.01 // Set the minimum value to 0.01
+                },
+                stock: {
+                    required: true,
+                    number: true,
+                    min: 0 // Set the minimum value to 0
+                },
+                product_description: {
+                    required: true,
+                    minlength: 60
+                },
+
+            },
+
+            messages: {
+                product_name: {
+                    required: "Please enter a valid product name.",
+                    minlength: "Name must be atleast 6 characters long.",
+                },
+                product_category: {
+                    required: "Please Select one category"
+                },
+                product_price: {
+                    required: "Please enter a valid price",
+                    number: "Price should be a positive number",
+                    min: "Price should be a number greater than 0."
+                },
+                stock: {
+                    required: "Please enter a valid number",
+                    number: "Stock should be a positive number",
+                    min: "Stock should be a number greater than or equal to 0."
+                },
+                product_description: {
+                    requierd: "Please enter a valid description",
+                    minlength: "Description mubst be contain atleast 60 charactrs long"
+                },
+            },
+            errorClass: "text-danger",
+        });
+    });
+</script>

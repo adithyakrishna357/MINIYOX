@@ -94,7 +94,7 @@
                                                 <%=i+1%>
                                             </td>
                                             <td>
-                                                <%=orders[i]._id%>
+                                                <%=orders[i]._id %>
                                             </td>
                                             <td>
                                                 <%=orders[i].userId%>
@@ -151,7 +151,7 @@
                                                             </div>
                                                         </div>
                                                         <% }else if(orders[i].status=='deliverd' ){%>
-                                                            <button class="dropOptions text-white">deliverd</button>
+                                                            <button class="dropOptions text-white">delivered</button>
                                                             <% }else if(orders[i].status=='returned' ){%>
                                                                 <button
                                                                     class="dropOptions text-primary">returned</button>
@@ -225,8 +225,6 @@
                                                                                     <%}%>
 
                                             </td>
-                                            <!-- <td><a  href="/admin/order-details/<%=orders[i]._id%>"><i
-                                                    class="bi bi-bag-plus"></i> <%=orders[i]._id%></a></td> -->
                                                     <td> <a href="/admin/order-details/<%=orders[i]._id%>"><i class="bi bi-bag-plus"></i></a></td>
                                         </tr>
                                         <%}%>

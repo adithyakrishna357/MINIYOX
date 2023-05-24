@@ -9,25 +9,29 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-3" style="width: 601px;">
-                        <form action="/admin/addproduct" method="post" enctype="multipart/form-data">
+                    <form action="/admin/addproduct" method="post" id="checkout-form" enctype="multipart/form-data" style="display: flex;">
+
+                        <div class="col-md-3" style="width: 601px;">
+
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Product Name</label>
-                                <input type="text" placeholder="Type here" name="product_name" class="form-control"
-                                    id="product_name" />
+                                <input type="text" placeholder="Type here" required name="product_name"
+                                    class="form-control" id="product_name" />
+
                             </div>
                             <div class="mb-4">
                                 <label for="product_slug" class="form-label">Description</label>
-                                <input type="text" placeholder="Type here" name="product_description"
+                                <input type="text" placeholder="Type here" required name="product_description"
                                     class="form-control" id="product_slug" />
+
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Category</label>
-                                <select class="form-select" name="product_category">
-                                    <!-- <option>Select a Category</option> -->
+                                <select class="form-select" required name="product_category">
+                                    <option selected disabled>Select a Category</option>
                                     <% for (var i=0; i < categorys.length; i++) { %>
                                         <% if (categorys[i].categorystatus) { %>
-                                            <option>
+                                            <option value="<%= categorys[i]._id %>">
                                                 <%= categorys[i].category_list %>
                                             </option>
                                             <% } %>
@@ -37,37 +41,41 @@
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Price</label>
-                                <input type="number" placeholder="Enter" class="form-control" name="product_price">
+                                <input type="number" placeholder="Enter" required class="form-control"
+                                    name="product_price">
+
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Stock</label>
-                                <input type="number" placeholder="Enter" class="form-control" name="stock">
+                                <input type="number" placeholder="Enter" required class="form-control" name="stock">
+
                             </div>
                             <div class="d-grid">
                                 <button class="btn btn-primary" type="submit">Submit</button>
+
                             </div>
-                    </div>
-                    <div class="col-md-9" style="width: 300px; margin-left: 115px;margin-top: 84px;">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h4>Product Image</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <input class="form-control" type="file" name="image"
-                                        accept="image/jpeg,image/png" onchange="previewImage(event)" />
-                                    <img class="preview" style="width: 300px; height: inherit" />
-                                    <input class="form-control" type="file" name="image"
-                                        accept="image/jpeg,image/png" onchange="previewImage(event)" />
-                                    <img class="preview" style="width: 300px; height: inherit" />
-                                    <input class="form-control" type="file" name="image"
-                                        accept="image/jpeg,image/png" onchange="previewImage(event)" />
-                                    <img class="preview" style="width: 300px; height: inherit" />
-                                    
+                        </div>
+                        <div class="col-md-9" style="width: 300px; margin-left: 115px;margin-top: 84px;">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h4>Product Image</h4>
                                 </div>
-                            </div>
-                        </div> <!-- card end// -->
-                    </div> <!-- .col// -->
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <input class="form-control" type="file" required name="image"
+                                            accept="image/jpeg,image/png" onchange="previewImage(event)" />
+                                        <img class="preview" style="width: 300px; height: inherit" />
+                                        <input class="form-control" type="file" required name="image"
+                                            accept="image/jpeg,image/png" onchange="previewImage(event)" />
+                                        <img class="preview" style="width: 300px; height: inherit" />
+                                        <input class="form-control" type="file" required name="image"
+                                            accept="image/jpeg,image/png" onchange="previewImage(event)" />
+                                        <img class="preview" style="width: 300px; height: inherit" />
+
+                                    </div>
+                                </div>
+                            </div> <!-- card end// -->
+                        </div> <!-- .col// -->
                     </form>
                 </div> <!-- .row // -->
             </div> <!-- card body .// -->
@@ -76,12 +84,12 @@
 </main>
 <script>
     function previewImage(event) {
-        var input = event.target;
+        const input = event.target;
 
-        var preview = input.nextElementSibling;
+        let preview = input.nextElementSibling;
 
         if (input.files && input.files[0]) {
-            var reader = new FileReader();
+            let reader = new FileReader();
 
             reader.onload = function () {
                 preview.src = reader.result;
@@ -90,4 +98,59 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+    
+
+    $(document).ready(function () {
+        $("#checkout-form").validate({
+            rules: {
+                product_name: {
+                    required: true,
+                    minlength: 6,
+                },
+                product_category: {
+                    required: true,
+                },
+                product_price: {
+                    required: true,
+                    number: true,
+                    min: 0.01 // Set the minimum value to 0.01
+                },
+                stock: {
+                    required: true,
+                    number: true,
+                    min: 0 // Set the minimum value to 0
+                },
+                product_description: {
+                    required: true,
+                    minlength: 60
+                },
+
+            },
+
+            messages: {
+                product_name: {
+                    required: "Please enter a valid product name.",
+                    minlength: "Name must be atleast 6 characters long.",
+                },
+                product_category: {
+                    required: "Please Select one category"
+                },
+                product_price: {
+                    required: "Please enter a valid price",
+                    number: "Price should be a positive number",
+                    min: "Price should be a number greater than 0."
+                },
+                stock: {
+                    required: "Please enter a valid number",
+                    number: "Stock should be a positive number",
+                    min: "Stock should be a number greater than or equal to 0."
+                },
+                product_description: {
+                    requierd: "Please enter a valid description",
+                    minlength: "Description mubst be contain atleast 60 charactrs long"
+                },
+            },
+            errorClass: "text-danger",
+        });
+    });
 </script>

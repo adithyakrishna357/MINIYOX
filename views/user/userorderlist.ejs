@@ -24,8 +24,6 @@
                         <th scope="col">ORDER ID</th>
                         <th scope="col">DATE</th>
                         <th scope="col">PAYMENT</th>
-                        <!-- <th scope="col">SUBTOTAL</th> -->
-                        <!-- <th scope="col">OFFER</th> -->
                         <th scope="col">GRAND TOTAL</th>
                         <th scope="col">STATUS</th>
                         <th scope="col">CHANGE STATUS</th>
@@ -48,8 +46,6 @@
                             <td><b>
                                     <%=orders[i].paymentMethod%>
                                 </b></td>
-                            <!-- <td><b><%=orders[i].subtotal%></b></td> -->
-                            <!-- <td><b><%=orders[i].offerPrice%></b></td> -->
                             <td><b>
                                     <%=orders[i].GrandTotal%>
                                 </b></td>
@@ -88,11 +84,6 @@
             <div class="row">
 
                 <div class="col-md-12">
-
-                    <!-- <div class="card">
-               <div class="card-header">
-               <h5>Cart</h5>
-               </div> -->
                     <div class="card-body cart">
                         <div class="col-sm-12 empty-cart-cls text-center">
                             <img src="/images/emptyorder.png" width="500" height="200" class="img-fluid mb-4 mr-3">
@@ -127,10 +118,7 @@
                                 location.reload()
                             }
                         }
-
                     })
-
-
                 }
             </script>
             <script>

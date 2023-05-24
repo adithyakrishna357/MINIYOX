@@ -7,7 +7,7 @@
             <div>
                 <h2 class="content-title card-title">Categories </h2>
             </div>
-            
+
             <!-- Button trigger modal -->
             <div class="">
 
@@ -26,7 +26,7 @@
                             <table class="table table-hover" id="myTable">
                                 <thead>
                                     <tr>
-                                        
+
                                         <th>Index</th>
                                         <th>Category Name</th>
                                         <th style="padding-left:73px;">List/Unlist</th>
@@ -36,7 +36,7 @@
                                 <tbody>
                                     <% for (var i=0; i < categories.length; i++) { %>
                                         <tr>
-                                            
+
                                             <td>
                                                 <%= i+1 %>
                                             </td>
@@ -94,10 +94,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/admin/addcategory" method="post">
+                <form action="" method="post">
                     <div class="mb-4">
                         <label for="product_name" class="form-label">Category Name</label>
-                        <input type="text" placeholder="Type here" name="category_list" class="form-control" />
+                        <input type="text" placeholder="Type here" name="category_list" class="form-control"
+                            id="category" />
+                        <p id="message" class="text-danger" style="display: none;">This Category is already exist..!</p>
                     </div>
 
 
@@ -105,7 +107,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" id="submitcategory" class="btn btn-primary">Save</button>
             </div>
             </form>
         </div>
@@ -124,25 +126,25 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/editcategory/<%=categories[i]._id%>" method="post">
+                    <!-- <form > -->
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Category Name</label>
-                            <input type="text" value="<%=categories[i].category_list%>" name="category_list"
+                            <input type="text" value="<%=categories[i].category_list%>" id="<%=categories[i]._id%>" name="category_list"
                                 class="form-control" />
+                                <p id="Message<%=categories[i]._id%>" class="text-danger" style="display: none;" >This Category is already exist..!</p>
                         </div>
 
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button  onclick="editsubmitcategory('<%=categories[i]._id%>')" class="btn btn-primary">Submit</button>
                         </div>
-                    </form>
+                    <!-- </form> -->
                 </div>
             </div>
         </div>
     </div>
     <% } %>
-
         <!-- jQuery and Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
             integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -151,14 +153,73 @@
             integrity="sha512-zHps82IkB2Qa8ikvPgo9ALZgnzG1sTFR1+UeM6U/bPafOwT6lwduLvx7geRzgZI9CKN/dz3nM3/NVhFksIuQ7A=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-            <script>
-                $(document).ready(function () {
-                    $('#myTable').DataTable({
-                        "paging": true,   // enable pagination
-                        "ordering": true, // enable sorting
-                        "searching": true // enable searching
-                    });
+        <script>
+            $(document).ready(function () {
+                $('#myTable').DataTable({
+                    "paging": true,   // enable pagination
+                    "ordering": true, // enable sorting
+                    "searching": true // enable searching
                 });
-            
-            
-            </script>
+            });
+            document.getElementById('submitcategory').addEventListener('click', function (event) {
+                event.preventDefault()
+                submitcategory()
+            })
+
+            const submitcategory = () => {
+                let category_list = document.getElementById('category').value
+
+
+
+
+                if (category_list) {
+                    console.log("hfghhg",category_list);
+
+                    $.ajax({
+                        url: '/admin/addcategory',
+                        method: 'post',
+                        data: {
+                            category_list
+                        },
+                        success: (response) => {
+                            console.log(response,"nhnuhjnik");
+                            if (response.status) {
+                                location.reload();
+                            }
+                            else {
+                                document.getElementById('message').setAttribute('class', 'd-block') = 'block'
+                            }
+                        }
+                    })
+                }
+            }
+        </script>
+        <script>
+            const editsubmitcategory = (categoryid) => {
+                let category_list = document.getElementById(categoryid).value
+                if (category_list) {
+
+                    $.ajax({
+                        url: '/admin/editcategory',
+                        method: 'post',
+                        data: {
+                            category_list,
+                            categoryid
+                        },
+                        success: (responses) => {
+                            if (responses.status) {
+                                location.reload();
+                            }
+                            else {
+                                document.getElementById(`Message${categoryid}`).style.display = 'block'
+
+                            }
+                        },
+                        catch: (err)=>{
+                            console.log(err)
+                            console.log("error commited");
+                        }
+                    })
+                }
+            }
+        </script>

@@ -2,6 +2,7 @@ const { response } = require('express');
 const userhelper = require('../helpers/userhelper');
 const producthelper = require('../helpers/producthelper');
 const razorpay = require('../utils/razorpay');
+const admincontrollers = require('../controllers/admincontrollers');
 const ObjectId = require('mongodb-legacy').ObjectId
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -9,16 +10,26 @@ const client = require('twilio')(accountSid, authToken);
 
 let message
 let Message
+let messaGe
 
 module.exports = {
     signuppost: (req, res) => {
         userhelper.DoSigUp(req.body).then((response) => {
-            req.session.userId = response._id;
-            console.log(req.session.user_id);
-            req.session.loggedIn = true;
-            req.session.user = response;
-            req.session.user.name = response.name;
-            res.redirect('/');
+            console.log(response);
+            if (response.status) {
+                req.session.userId = response._id;
+                req.session.loggedIn = true;
+                req.session.user = response.dataDoc;
+                console.log(req.session.user);
+                req.session.user.name = response.dataDoc.name;
+
+                res.redirect(`/?user=${req.session.user}`);
+            }
+            else {
+                messaGe = response.message
+                res.redirect('/signup')
+            }
+
         })
     },
     loginrender: (req, res) => {
@@ -26,7 +37,7 @@ module.exports = {
             res.redirect('/');
         }
         else {
-            res.render('user/userLogin', { user: true, userHeader: false, message });
+            res.render('user/userLogin', { userHeader: false, message });
             message = ''
         }
 
@@ -52,41 +63,67 @@ module.exports = {
         })
     },
     logoutget: (req, res) => {
-        // console.log("logout");
         req.session.user = false;
         req.session.loggedIn = false;
         res.redirect('/');
     },
     homepagerender: async (req, res) => {
-        let user = req.session.user
-        console.log(user);
+        const user = req.session.user
+        const banner = await userhelper.GetBannersDetails()
         let cartcount = null;
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
         }
-        res.render('user/index', { userHeader: true, user, cartcount })
+        res.render('user/index', { userHeader: true, user, cartcount, banner })
     },
     signuprender: (req, res) => {
-        res.render('user/userSignup', { user: true, userHeader: false });
+        res.render('user/userSignup', { userHeader: false, messaGe });
     },
     getviewproducts: async (req, res) => {
-        // req.session.loggedIn=true;
-        let user = req.session.user
+        let filter = req.query.filter || req.session.filter;
+        const user = req.session.user
+        let filterproducts = req.session.filterproducts;
         let cartcount = null;
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
         }
 
-        producthelper.ViewProducts().then((products) => {
-            console.log("this is product user side---", products.length);
-            producthelper.GetProductCategory().then((categories) => {
-                res.render('user/view-products', { user, cartcount, categories, products, userHeader: true });
+        if (filter === "allproducts") {
+            filter = null;
+            filterproducts = null;
+            req.session.filter = null;
+            req.session.filterproducts = null
+        }
+        let currentPage = req.query.page || 1;
+
+
+        if (filter || filterproducts) {
+            producthelper.GetFilteredPro(currentPage, filter).then((products) => {
+                req.session.filterproducts = products;
+                req.session.filter = filter;
+
+                producthelper.GetFilterproductcount(filter).then((product) => {
+                    let totalCount = product.length
+
+                    producthelper.GetProductCategory().then((categories) => {
+                        res.render('user/filterpage', { user, cartcount, categories, products, userHeader: true, currentPage, totalCount });
+                    })
+                })
+
             })
-        })
+        }
+        else {
+            producthelper.ViewProducts(currentPage).then(async (products) => {
+
+                let totalCount = await userhelper.ProductCount()
+                producthelper.GetProductCategory().then((categories) => {
+                    res.render('user/view-products', { user, cartcount, categories, products, userHeader: true, currentPage, totalCount });
+                })
+            })
+        }
     },
     singleproductview: async (req, res) => {
-        // req.session.loggedIn=true;
-        let user = req.session.user
+        const user = req.session.user
         let cartcount = null;
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
@@ -96,29 +133,22 @@ module.exports = {
         })
     },
     getotplogin: (req, res) => {
-        // req.session.loggedIn=false;
         if (req.session.loggedIn) {
             res.redirect('/');
         }
         else {
             res.render('user/userotpLogin', { Message });
-            // message=''
         }
 
     },
     sendotp: (req, res) => {
-        // console.log(req.body);
         userhelper.OtpNoSend(req.body.mobile).then((response) => {
             if (response.status) {
                 if (!response.isBlocked) {
-                    // req.session.user = response.user.name;
-                    // req.session.userdetails = response.user;
-                    // req.session.loggedIn = true;
                     client.verify.v2.services('VA71c499a309a0a26cfd9ddc2921158844')
                         .verifications
                         .create({ to: `+91${req.body.mobile}`, channel: 'sms' })
                         .then((verification) => {
-                            // console.log(verification.status);
                             Message = ""
                             res.render('user/userotpverification', { Message, mobile: req.body.mobile });
                         })
@@ -138,18 +168,13 @@ module.exports = {
 
     },
     resendotp: (req, res) => {
-        // console.log(req.body);
         userhelper.OtpNoSend(req.body.mobile).then((response) => {
             if (response.status) {
                 if (!response.isBlocked) {
-                    // req.session.user = response.user.name;
-                    // req.session.userdetails = response.user;
-                    // req.session.loggedIn = true;
                     client.verify.v2.services('VA71c499a309a0a26cfd9ddc2921158844')
                         .verifications
                         .create({ to: `+91${req.body.mobile}`, channel: 'sms' })
                         .then((verification) => {
-                            // console.log(verification.status);
                             Message = ""
                             res.redirect('/otpVerify?mobile=' + encodeURIComponent(req.body.mobile));
                         })
@@ -164,26 +189,19 @@ module.exports = {
                 Message = "Mobile Number is not registered";
                 res.redirect('/otplogin')
             }
-
         })
-
     },
-
     verifyotp: (req, res) => {
-        console.log(req.body);
         try {
             client.verify.v2.services('VA71c499a309a0a26cfd9ddc2921158844')
                 .verificationChecks
                 .create({ to: `+91${req.body.mobile}`, code: `${req.body.otp}` })
                 .then((verification_check) => {
-                    console.log(verification_check.status);
                     let mobile = req.body.mobile;
                     if (verification_check.valid) {
                         userhelper.OtpNoSend(mobile).then((response) => {
                             req.session.user = response.user;
-                            console.log(response.user, 'i');
                             req.session.loggedIn = true;
-                            // console.log(verification_check.valid);
                             res.redirect('/')
                         })
                     }
@@ -198,9 +216,8 @@ module.exports = {
         }
     },
     getcart: async (req, res) => {
-        let user = req.session.user
+        const user = req.session.user
         let products = await userhelper.GetCart(req.session.user._id)
-        // console.log(products,"yugdo8ygwctgwct7edf8ydgvcybhv");
         let cartcount = null;
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
@@ -213,17 +230,12 @@ module.exports = {
         }
         totalprice = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         res.render('user/shoppingcart', { user, userHeader: true, cartcount, products, totalprice })
-
-
     },
 
 
     addcart: (req, res) => {
-        // console.log(req.session.user._id);
-        // console.log("api call............");
         userhelper.AddCart(req.params.id, req.session.user._id).then(async () => {
             cartcount = await userhelper.GetCartCount(req.session.user._id);
-            // res.redirect('back')
             res.json({
                 status: true,
                 cartCount: cartcount
@@ -236,10 +248,9 @@ module.exports = {
         })
     },
     changecartquality: (req, res) => {
-        let userId = req.session.user._id
-        // console.log(userId);
+        const userId = req.session.user._id
+
         userhelper.ChangeCartQuantity(req.body, userId).then((response) => {
-            // console.log(response);
             if (response.modifiedCount === 1) {
                 res.json({
                     status: 'removed',
@@ -255,10 +266,8 @@ module.exports = {
         })
     },
     getcheckoutpage: async (req, res) => {
-        // console.log("sdxcfgvbhnjkmcfgvbhjkm//////////////////");
-        let user = req.session.user
+        const user = req.session.user
         let products = await userhelper.GetCart(req.session.user._id)
-        // console.log(products,"yugdo8ygwctgwct7edf8ydgvcybhv");
         let cartcount = null;
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
@@ -271,13 +280,18 @@ module.exports = {
         }
         totalprice = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         const address = await userhelper.GetAddress(req.session.user._id)
-        // console.log(address,"adreesssssssssssssssssssssssss////////1234567890");
-        res.render('user/checkoutpage', { user, userHeader: true, cartcount, products, totalprice, address })
-
+        const wallet = await userhelper.FindOneWallet(req.session.user._id)
+        let walletAmount
+        if (wallet) {
+            walletAmount = wallet.amount
+        }
+        else {
+            walletAmount = 0000
+        }
+        res.render('user/checkoutpage', { user, userHeader: true, cartcount, products, totalprice, address, walletAmount })
     },
     addaddress: async (req, res) => {
         try {
-            // console.log(req.body,"esdrfgvbhnjmdcfgvbhnjkm/////////////////");
             await userhelper.AddAddress(req.body, req.session.user._id)
             res.redirect('/checkoutpage')
         }
@@ -286,15 +300,11 @@ module.exports = {
         }
     },
     placeorder: async (req, res) => {
-        // console.log(req.body, "sedrfgyhjgvbhn/////////////////////////////////////////////");
         try {
-            let { addressid, paymentMethod, subtotal, GrandTotal } = req.body
-            let userId = req.session.user._id
+            let { addressid, paymentMethod, subtotal, GrandTotal, coupon } = req.body
+            const userId = req.session.user._id
             const cart = await userhelper.GetCart(userId)
-            // console.log('/////////////////////////////234567890-234567890');
-            // console.log(cart);
-            
-            var outofstock = false
+            let outofstock = false
             cart.forEach(cart => {
                 if (cart.products.quantity > cart.productsDetails.stock) {
                     outofstock = true,
@@ -311,34 +321,25 @@ module.exports = {
             }
             else {
                 let address = await userhelper.FindOneAddress(userId, addressid)
-                console.log(address,"hgyutyutyu");
-                // console.log(products,'esdxcfgvbhnjkm,l//////////////////////////////');
-                var products = []
-                for (var i = 0; i < cart.length; i++) {
+                let products = []
+                for (let i = 0; i < cart.length; i++) {
                     let product = { productId: cart[i].products.item, quantity: cart[i].products.quantity }
                     products.push(product)
                 }
-                // console.log(products, 'aqswdefrghjkdefrgthyjukilo;//////3456789');
-
                 if (paymentMethod === 'cod') {
                     let status = 'pending'
-                    subtotal=parseInt(subtotal)
-                    GrandTotal=parseInt(GrandTotal)
-                    const result = await userhelper.AddOrder(userId, address, paymentMethod, subtotal, GrandTotal, products, status)
-                    // console.log(result,"rrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeessssssssssssuuuult");
+                    subtotal = parseInt(subtotal)
+                    GrandTotal = parseInt(GrandTotal)
+                    const result = await userhelper.AddOrder(userId, address, paymentMethod, subtotal, GrandTotal, products, status, coupon)
                     var orderId = result.insertedId
-                    // console.log(orderId,"orddddddddddddddddddddddddderiiiiiiiiddddddddddd");
 
                     products.forEach(async (product) => {
-
-                        // console.log(product.stock,"awsdcfgvbhnjkm,lcfvgbh77777777777777777777777777777777777777777777777");
                         await userhelper.UpdateStock(product.productId, product.quantity)
                     });
 
                     status = 'placed'
                     await userhelper.OrderStatusChange(orderId, status)
                     await userhelper.DeleteCart(userId)
-                    console.log(result);
                     if (result) {
                         res.json({
                             status: "success",
@@ -347,13 +348,9 @@ module.exports = {
                         })
                     }
                 } else if (paymentMethod === 'razorpay') {
-                   
-                    // console.log(result,"rrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeessssssssssssuuuult");
-                    
-                    // console.log(orderId,"orddddddddddddddddddddddddderiiiiiiiiddddddddddd");
+
                     const razoResOrder = await razorpay.GenerateRazorpay(orderId, GrandTotal)
                     const user = await userhelper.GetUserDetails(userId)
-                    console.log("razorpay",razoResOrder);
                     res.json({
                         orderId: orderId,
                         razorpayId: razoResOrder.id,
@@ -362,7 +359,31 @@ module.exports = {
                         email: user.email,
                         phone: user.phone
                     })
+                }
+                else if (paymentMethod === 'wallet') {
+                    let status = "pending"
+                    subtotal = parseInt(subtotal)
+                    GrandTotal = parseInt(GrandTotal)
+                    const result = await userhelper.AddOrder(userId, address, paymentMethod, subtotal, GrandTotal, products, status, coupon)
+                    var orderId = result.insertedId
 
+                    products.forEach(async (product) => {
+                        await userhelper.UpdateStock(product.productId, product.quantity)
+                    });
+
+                    await userhelper.PaymentStatusChange(orderId, 'paid')
+                    let amount = GrandTotal * -1
+                    await userhelper.UpdateWallet(userId, amount)
+                    status = 'placed'
+                    await userhelper.OrderStatusChange(orderId, status)
+                    await userhelper.DeleteCart(userId)
+                    if (result) {
+                        res.json({
+                            status: "success",
+                            message: "order placed successfuly",
+                            orderId: result.insertedId
+                        })
+                    }
                 }
             }
         }
@@ -389,9 +410,7 @@ module.exports = {
             const user = req.session.user;
             const orderClass = 'active'
             const orders = await userhelper.OrderListGet()
-            console.log(orders);
-            for (var i = 0; i < orders.length; i++) {
-                // orders[i].GrandTotal = orders[i].GrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            for (let i = 0; i < orders.length; i++) {
                 orders[i].date = orders[i].date.toLocaleString()
             }
             let cartcount = null;
@@ -406,9 +425,7 @@ module.exports = {
         }
     },
     cancelorder: async (req, res, next) => {
-
         try {
-
             let { orderId, status } = req.body
             const products = await userhelper.OrderProductAndQuantity(orderId)
             products.forEach(async (product) => {
@@ -422,26 +439,22 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
-
         }
     },
     orderdetails: async (req, res) => {
-        // console.log("7777777777777777773333333333333333335555555555555");
-        // console.log(req.params, 'lll')
         const user = req.session.user
         const orderId = req.params.id
         const orderClass = 'active'
         const orders = await userhelper.OrderDetails(orderId)
-        var total = 0;
+        let total = 0;
         for (var i = 0; i < orders.length; i++) {
             total = total + orders[i].subtotal
             orders[i].GrandTotal = orders[i].GrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].productsDetails.product_price = orders[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].subtotal = orders[i].subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-            // orders[i].offerPrice = orders[i].offerPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            orders[i].discount = orders[i].discount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].date = orders[i].date.toLocaleString()
         }
-
         total = total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         let cartcount = null;
         if (req.session.user) {
@@ -468,7 +481,6 @@ module.exports = {
     editprofileinfo: (req, res) => {
         try {
             const userId = req.params.id;
-            console.log(userId);
             userhelper.UpdateProfileInfo(userId, req.body).then((response) => {
                 res.redirect('/userprofile/:id')
             })
@@ -479,22 +491,17 @@ module.exports = {
         }
     },
     forgotgetotplogin: (req, res) => {
-
         res.render('user/forgotpasswordotp', { Message });
     },
     forgotsendotp: (req, res) => {
-        // console.log(req.body);
+
         userhelper.OtpNoSend(req.body.mobile).then((response) => {
             if (response.status) {
                 if (!response.isBlocked) {
-                    // req.session.user = response.user.name;
-                    // req.session.userdetails = response.user;
-                    // req.session.loggedIn = true;
                     client.verify.v2.services('VA71c499a309a0a26cfd9ddc2921158844')
                         .verifications
                         .create({ to: `+91${req.body.mobile}`, channel: 'sms' })
                         .then((verification) => {
-                            // console.log(verification.status);
                             res.render('user/forgototpverify', { Message, mobile: req.body.mobile });
                         })
                         .catch((err) => console.log(err));
@@ -508,27 +515,19 @@ module.exports = {
                 Message = "Mobile Number is not registered";
                 res.redirect('/forgotpassword')
             }
-
         })
-
     },
     forgotverifyotp: (req, res) => {
-        console.log(req.body);
         try {
             client.verify.v2.services('VA71c499a309a0a26cfd9ddc2921158844')
                 .verificationChecks
                 .create({ to: `+91${req.body.mobile}`, code: `${req.body.otp}` })
                 .then((verification_check) => {
-                    console.log(verification_check.status);
-                    let mobile = req.body.mobile;
+                    const mobile = req.body.mobile;
                     if (verification_check.valid) {
                         userhelper.OtpNoSend(mobile).then((response) => {
-                            // req.session.user = response.user;
-                            let userId = response.user._id
-                            // console.log(response);
-                            // req.session.loggedIn = true;
-                            // console.log(verification_check.valid);
-                            res.render('user/resetpassword',{userId,userHeader:false})
+                            const userId = response.user._id
+                            res.render('user/resetpassword', { userId, userHeader: false })
                         })
                     }
                     else {
@@ -541,59 +540,46 @@ module.exports = {
             res.redirect('/forgototpsendotp?mobile=' + encodeURIComponent(req.body.mobile))
         }
     },
-    changepassword: async(req, res) => {
+    changepassword: async (req, res) => {
         const user = req.session.user
         let cartcount = null;
-            if (req.session.user) {
-                cartcount = await userhelper.GetCartCount(req.session.user._id)
-            }
-        res.render('user/changepassword', { user, userHeader: true })
+        if (req.session.user) {
+            cartcount = await userhelper.GetCartCount(req.session.user._id)
+        }
+        res.render('user/changepassword', { user, userHeader: true, cartcount })
     },
     changepasswordpost: (req, res) => {
-        const userId = req.
-        console.log(req.body, "77777777777777777777");
+        const userId = req.session.user._id
         const password = req.body
         userhelper.UpdatePassword(userId, password)
         res.redirect('/userprofile/:id')
     },
     verifypayment: async (req, res, next) => {
-
         try {
-
             let { razorResponse, orderId, amount, order } = req.body
-            let { products, addressid, paymentMethod, subtotal, GrandTotal } = order
-
+            let { products, addressid, paymentMethod, subtotal, GrandTotal, coupon } = order
             const userId = req.session.user._id
             const isPaymentSuccess = razorpay.VerifyPayment(razorResponse)
 
             if (isPaymentSuccess) {
-
                 products.forEach((product) => {
                     product.productId = new ObjectId(product.productId)
                 })
-
                 let address = await userhelper.FindOneAddress(userId, addressid)
-                console.log(address,"aaaadddddddddddd");
                 const status = 'placed'
-                const result = await userhelper.AddOrder(userId, address, paymentMethod, subtotal, GrandTotal, products, status)
-                var orderid = result.insertedId
+                const result = await userhelper.AddOrder(userId, address, paymentMethod, subtotal, GrandTotal, products, status, coupon)
+                let orderid = result.insertedId
                 await userhelper.PaymentStatusChange(orderid, 'paid')
                 products.forEach(async (product) => {
                     product.quantity = product.quantity * -1
                     await userhelper.UpdateStock(product.productId, product.quantity)
                 })
-
-
                 await userhelper.DeleteCart(userId)
-                
-
                 res.json({
                     status: "success",
                     message: "order placed",
                     orderId: orderid,
-                    
                 })
-
             } else {
                 await userhelper.PaymentStatusChange(orderid, "cancelled")
                 res.json({
@@ -605,15 +591,144 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
-
         }
-
     },
-    resetpassword:(req,res)=>{
+    resetpassword: (req, res) => {
         const userId = req.params.id
-        console.log(userId);
         const password = req.body
         userhelper.UpdatePassword(userId, password)
         res.redirect('/login')
+    },
+    manageaddress: async (req, res) => {
+        const userId = req.session.user._id;
+        const user = await userhelper.GetUserDetails(userId)
+        let cartcount = null;
+        if (req.session.user) {
+            cartcount = await userhelper.GetCartCount(req.session.user._id)
+        }
+        res.render('user/manageaddress', { user, userHeader: true, cartcount })
+    },
+    manageaddaddress: async (req, res) => {
+        try {
+            await userhelper.AddAddress(req.body, req.session.user._id)
+            res.redirect('/manageaddress')
+        }
+        catch (error) {
+            console.log(error);
+        }
+    },
+    editaddress:async(req,res)=>{
+        const userId= req.session.user._id
+        const addressId = req.params.id
+
+        try{
+            await userhelper.EditAddress(req.body,userId,addressId).then(()=>{
+                res.redirect('/manageaddress')
+            })
+
+        }
+        catch(err){
+            console.log(err);
+        }
+    },
+    removeaddress: (req, res) => {
+        const addrId = req.params.id;
+        const userId = req.session.user._id;
+        userhelper.RemoveProfileAddress(userId, addrId).then(() => {
+            res.json({ status: true})
+        })
+    },
+    search: async (req, res) => {
+        const searchValue = req.body
+        const user = req.session.user;
+        let cartcount = null;
+        if (req.session.user) {
+            cartcount = await userhelper.GetCartCount(req.session.user._id)
+        }
+
+        producthelper.Search({ search: searchValue }).then(async (products) => {
+            const categories = await producthelper.GetProductCategory()
+            if (products.length > 0) {
+                res.render('user/searchproduct', { userHeader: true, products, cartcount, categories, user })
+            } else {
+                res.render('user/searchempty', { userHeader: true, products, user })
+            }
+
+        }).catch((err) => {
+            res.json({
+                status: 'error',
+                message: err.message
+            });
+        })
+    },
+    addtowish: (req, res) => {
+        const proId = req.params.id
+        const userId = req.session.user._id
+        userhelper.AddToWish(proId, userId).then((response) => {
+            if (response === "product exist") {
+                res.json({
+                    status: "not success"
+                })
+            }
+            else {
+                res.json({
+                    status: "success"
+                })
+            }
+        })
+    },
+    wishlistdetails: async (req, res) => {
+        const user = req.session.user;
+        const products = await userhelper.WishListDetails(req.session.user._id)
+        let cartcount = null;
+        if (req.session.user) {
+            cartcount = await userhelper.GetCartCount(req.session.user._id)
+        }
+        res.render('user/wishlist', { user, products, userHeader: true, cartcount })
+    },
+    removewishlistproduct: (req, res) => {
+        const prodId = req.params.id
+        const userId = req.session.user._id
+        userhelper.RemoveWishlistProduct(prodId, userId).then(() => {
+            res.json({ status: true })
+        })
+    },
+    couponapply: (req, res) => {
+        const userId = req.session.user._id
+        userhelper.CouponApply(req.body.coupon, userId).then((coupon) => {
+            if (coupon) {
+                if (coupon === "couponExist") {
+                    res.json({
+                        status: "success",
+                        message: "coupon is already used !!",
+                        used: true,
+                        coupon: coupon
+                    })
+                }
+                else {
+                    res.json({
+                        status: "success",
+                        coupon: coupon,
+                        total: coupon.discount
+                    })
+                }
+            }
+            else {
+                res.json({
+                    message: "coupon is not valid"
+                })
+            }
+        })
+    },
+    getwallet:async(req,res)=>{
+        const userId = req.session.user._id;
+        const user = req.session.user
+        const userDetails = await userhelper.GetUserDetails(userId)
+        let cartcount = null;
+        if (req.session.user) {
+            cartcount = await userhelper.GetCartCount(req.session.user._id)
+        }
+        const wallet = await userhelper.FindOneWallet(userId)
+        res.render('user/mywallet',{user,userHeader:true,cartcount,userDetails,wallet})
     }
 }

@@ -1,0 +1,201 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css"
+    integrity="sha512-tlEAlF6T11i6aTpU6rNCnMxRvI7X9B1Fg/7TWG3q+lIAn7yQhAXYnxb7qfgEGqEa70gX2Q5mb5e5hWdPvC65Rw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<main class="main-wrap">
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Coupons </h2>
+            </div>
+
+            <!-- Button trigger modal -->
+            <div class="">
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Add Coupon
+                </button>
+            </div>
+            <!-- Modal -->
+
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row" style="width: 1522px;">
+                    <div class="col-md-9">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="myTable">
+                                <thead>
+                                    <tr>
+
+                                        <th>Index</th>
+                                        <th>Coupon code</th>
+                                        <th >Created date</th>
+                                        <th >Expirey date</th>
+                                        <th >Status</th>
+                                        <th >Edit</th>
+                                        <th >Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for (var i=0; i < coupons.length; i++) { %>
+                                        <tr>
+
+                                            <td>
+                                                <%= i+1 %>
+                                            </td>
+                                            <td><b>
+                                                    <%= coupons[i].couponcode %>
+                                                </b></td>
+
+                                            <td>
+                                                <b>
+                                                    <%= coupons[i].createddate %>
+                                                </b>
+                                            </td>
+
+                                            <td>
+                                                <b>
+                                                    <%= coupons[i].expirydate %>
+                                                </b>
+                                            </td>
+                                            <% if (coupons[i].expired) { %> 
+                                            <td>
+                                                <b class="text-danger">
+                                                    Expired
+                                                </b>
+                                            </td>
+                                            <% } else { %>
+                                                <td>
+                                                    <b class="text-success">
+                                                        Active
+                                                    </b>
+                                                </td>
+                                                <% } %>
+                                                <td>
+                                                    <a class="btn btn-sm font-sm rounded btn-brand"
+                                                                 data-bs-toggle="modal"
+                                                                data-bs-target="#modal<%=coupons[i]._id%>">
+                                                                <i class="material-icons md-edit"></i> Edit
+                                                            </a>
+                                                </td>
+                                                <td>
+                                                    <a href="/admin/deletecoupon/<%=coupons[i]._id%>"
+                                                        class="btn btn-sm font-sm rounded btn-danger">
+                                                        Delete
+                                                    </a>
+                                                </td>
+                                        </tr>
+                                        <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> <!-- .col// -->
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+</main>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Coupon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/admin/addcoupon" method="post">
+                    <div class="mb-4">
+                        <label for="product_name" class="form-label">Coupon code</label>
+                        <input type="text" placeholder="Type here" name="couponcode" class="form-control"
+                            id="couponcode" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="product_name" class="form-label">Discount amount</label>
+                        <input type="number" placeholder="Type here" name="discount" class="form-control"
+                            id="discount" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="product_name" class="form-label">Expiry date</label>
+                        <input type="date" placeholder="Type here" name="expirydate" class="form-control"
+                            id="category" />
+                    </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="submitcategory" class="btn btn-primary">Save</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<% for (var i=0; i < coupons.length; i++) { %>
+    <!-- Modal -->
+    <div class="modal fade" id="modal<%=coupons[i]._id%>" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/editcoupon/<%=coupons[i]._id%>" method="post" >
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Coupon code</label>
+                            <input type="text" value="<%= coupons[i].couponcode %>" name="couponcode" class="form-control"
+                                id="couponcode" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Discount amount</label>
+                            <input type="number" value="<%= coupons[i].discount %>" name="discount" class="form-control"
+                                id="discount" />
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Expiry date</label>
+                            <input type="date" value="<%= coupons[i].expirydate %>"  name="expirydate" class="form-control"
+                                id="category" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit"  class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"
+    integrity="sha512-zHps82IkB2Qa8ikvPgo9ALZgnzG1sTFR1+UeM6U/bPafOwT6lwduLvx7geRzgZI9CKN/dz3nM3/NVhFksIuQ7A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            "paging": true,   // enable pagination
+            "ordering": true, // enable sorting
+            "searching": true // enable searching
+        });
+    });
+
+
+
+
+
+
+</script>
