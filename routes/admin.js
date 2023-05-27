@@ -34,6 +34,7 @@ router.post('/addcoupon',middleware.checkAdminLoggedIn,admincontroller.addcoupon
 router.post('/editcoupon/:id',middleware.checkAdminLoggedIn,admincontroller.editcouponpost)
 router.get('/deletecoupon/:id',middleware.checkAdminLoggedIn,admincontroller.deletecoupon)
 router.get('/bannerview',middleware.checkAdminLoggedIn,admincontroller.getbanners)
+
 router.get('/addbanner',middleware.checkAdminLoggedIn,admincontroller.addbanner)
 router.post('/addbanner',upload.single('image'),middleware.checkAdminLoggedIn,admincontroller.addbannerpost)
 router.get('/listbanner/:id',middleware.checkAdminLoggedIn,admincontroller.listbanner)
