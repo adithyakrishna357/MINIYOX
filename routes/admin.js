@@ -5,12 +5,13 @@ const admincontroller = require('../controllers/admincontrollers');
 const upload = require('../utils/multer')
 const middlware= require('../util/middleware');
 const middleware = require('../util/middleware');
+const {checkAdminLoggedIn} = require('../util/middleware')
 
 router.get('/', admincontroller.homepage)
 router.get('/login', admincontroller.adminlogin)
 router.post('/login',admincontroller.adminloginpost)
 router.get("/logout",admincontroller.adminlogout)
-router.get("/adminproductview",middlware.checkAdminLoggedIn,admincontroller.productpageget)
+router.get("/adminproductview", checkAdminLoggedIn,admincontroller.productpageget)
 router.get("/productcategory",middlware.checkAdminLoggedIn,admincontroller.productcategory)
 router.post("/addcategory",middlware.checkAdminLoggedIn,admincontroller.addcategory)
 router.get("/addproduct",middlware.checkAdminLoggedIn,admincontroller.addproduct)
@@ -38,6 +39,9 @@ router.post('/addbanner',upload.single('image'),middleware.checkAdminLoggedIn,ad
 router.get('/listbanner/:id',middleware.checkAdminLoggedIn,admincontroller.listbanner)
 router.get('/unlistbanner/:id',middleware.checkAdminLoggedIn,admincontroller.unlistbanner)
 router.get('/deletebanner/:id',middleware.checkAdminLoggedIn,admincontroller.deletebanner)
-router.post('/editaddress',middleware.checkUserLoggedIn)
+router.get('/graphstatics',middleware.checkAdminLoggedIn,admincontroller.graphstatics)
+router.get('/salesreport',middleware.checkAdminLoggedIn,admincontroller.salesreport)
+router.get('/editbanner/:id',middleware.checkAdminLoggedIn,admincontroller.editbanner)
+router.post('/editbanner/:id',upload.single('image'),middleware.checkAdminLoggedIn,admincontroller.editbannerpost)
 
 module.exports = router;

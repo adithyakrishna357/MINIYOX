@@ -18,7 +18,6 @@ module.exports = {
                     resolve(response);
                 }
                 else {
-                    console.log("admin not  found");
                     resolve({ status: false })
                 }
             }
@@ -82,14 +81,15 @@ module.exports = {
             })
         }
     },
-    PaymentStatusChange:async(orderId,status)=>{
-        await db.get().collection(collection.ORDER_COLLECTION).updateOne({_id:new objectId(orderId)},{
-            $set:{
-              paymentStatus:status}
-          })
+    PaymentStatusChange: async (orderId, status) => {
+        await db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: new objectId(orderId) }, {
+            $set: {
+                paymentStatus: status
+            }
+        })
     },
-    OrderAndUserDetails:async(orderId)=>{
-        const Order= await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+    OrderAndUserDetails: async (orderId) => {
+        const Order = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
             {
                 $match: { _id: new objectId(orderId) }
 
@@ -110,55 +110,55 @@ module.exports = {
             },
             {
                 $lookup: {
-                  from: "user",
-                  localField: 'userId',
-                  foreignField: "_id",
-                  as: "userDetails"
+                    from: "user",
+                    localField: 'userId',
+                    foreignField: "_id",
+                    as: "userDetails"
                 }
             },
             {
                 $unwind: {
-                  path: "$userDetails",
-                  
+                    path: "$userDetails",
+
                 }
             },
             {
-                $addFields:{'subtotal':{$multiply:['$products.quantity','$productsDetails.product_price']}}
+                $addFields: { 'subtotal': { $multiply: ['$products.quantity', '$productsDetails.product_price'] } }
             }
         ]).toArray()
         return Order
     },
-    AddCoupon:(coupon)=>{
-        return new Promise(async(resolve,reject) => {
+    AddCoupon: (coupon) => {
+        return new Promise(async (resolve, reject) => {
             coupon.discount = Number(coupon.discount);
             coupon.expirydate = new Date(coupon.expirydate);
-            coupon.status=true;
+            coupon.status = true;
             const newDate = new Date();
-            if(coupon.date < newDate) {
+            if (coupon.date < newDate) {
                 coupon.status = 'EXPIRED';
             }
-            else{
+            else {
                 coupon.createddate = newDate
             }
             const couponExist = await db.get().collection(collection.COUPON_COLLECTION)
-            .findOne({ couponcode: coupon.couponcode});
-            if(couponExist) {
+                .findOne({ couponcode: coupon.couponcode });
+            if (couponExist) {
                 resolve(null);
-            }else{
+            } else {
                 db.get().collection(collection.COUPON_COLLECTION)
-                .insertOne(coupon).then((response) => {
-                resolve();
-                })
-            }   
+                    .insertOne(coupon).then((response) => {
+                        resolve();
+                    })
+            }
         })
     },
-    GetAllCoupons:()=>{
-        return new Promise(async(resolve,reject)=>{
+    GetAllCoupons: () => {
+        return new Promise(async (resolve, reject) => {
             const coupons = await db.get().collection(collection.COUPON_COLLECTION)
-            .find().toArray();
+                .find().toArray();
             const newDate = new Date();
             coupons.forEach(coupon => {
-                if(coupon.expirydate < newDate) {
+                if (coupon.expirydate < newDate) {
                     coupon.status = "EXPIRED";
                 }
                 const months = ["JAN", "FEB", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -176,107 +176,241 @@ module.exports = {
             resolve(coupons);
         })
     },
-    EditCouponPost:(couponId,coupon)=>{
-        return new Promise(async(resolve,reject) => {
+    EditCouponPost: (couponId, coupon) => {
+        return new Promise(async (resolve, reject) => {
             coupon.discount = Number(coupon.discount);
             coupon.expirydate = new Date(coupon.expirydate);
-            coupon.status=true;
+            coupon.status = true;
             const newDate = new Date();
-            if(coupon.date < newDate) {
+            if (coupon.date < newDate) {
                 coupon.status = 'EXPIRED';
             }
             const couponExist = await db.get().collection(collection.COUPON_COLLECTION)
-            .findOne({ couponcode: coupon.couponcode});
-            if(couponExist) {
-                resolve(null);
-            }else{
+                .findOne({ couponcode: coupon.couponcode });
+           
+            const couponID = new objectId(couponId)
+            if (couponExist) {
+                if (couponExist._id === couponID) {
+                    resolve(null);
+                } else {
+                    db.get().collection(collection.COUPON_COLLECTION)
+                        .updateOne({ _id: couponID },
+                            {
+                                $set: {
+                                    couponcode: coupon.couponcode,
+                                    discount: coupon.discount,
+                                    expirydate: coupon.expirydate
+                                }
+                            }).then((response) => {
+                                resolve();
+                            })
+                }
+            }
+            else {
                 db.get().collection(collection.COUPON_COLLECTION)
-                .updateOne({_id: new objectId(couponId)},
-                    {
-                        $set:{
-                            couponcode:coupon.couponcode,
-                            discount:coupon.discount,
-                            expirydate:coupon.expirydate
-                        }
-                    }).then((response) => {
-                resolve();
-                })
-            }   
+                    .updateOne({ _id: couponID },
+                        {
+                            $set: {
+                                couponcode: coupon.couponcode,
+                                discount: coupon.discount,
+                                expirydate: coupon.expirydate
+                            }
+                        }).then((response) => {
+                            resolve();
+                        })
+            }
+
         })
     },
-    DeleteCoupon:(couponId)=>{
-        return new Promise((resolve,reject)=>{
-            db.get().collection(collection.COUPON_COLLECTION).deleteOne({_id: new objectId(couponId)}).then(()=>{
+    DeleteCoupon: (couponId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.COUPON_COLLECTION).deleteOne({ _id: new objectId(couponId) }).then(() => {
                 resolve()
             })
         })
     },
-    AddBanner: (banner,callback) => {          
+    AddBanner: (banner, callback) => {
         return new Promise((resolve, reject) => {
-            banner.status=true;
+            banner.status = true;
             db.get().collection(collection.BANNER_COLLECTION)
-            .insertOne(banner).then((data) => {
-            callback(data.insertedId);
-            })
+                .insertOne(banner).then((data) => {
+                    callback(data.insertedId);
+                })
         })
     },
-    UpdateBannerImages: (bannerId,bannerUrl) => {       
-        return new Promise((resolve,reject) => {
+    UpdateBannerImages: (bannerId, bannerUrl) => {
+        return new Promise((resolve, reject) => {
             db.get().collection(collection.BANNER_COLLECTION)
-            .updateOne({_id: new ObjectId(bannerId)},
-            {
-                $set: 
+                .updateOne({ _id: new ObjectId(bannerId) },
                     {
-                        image: bannerUrl
-                    }
-            })
-        }) 
+                        $set:
+                        {
+                            image: bannerUrl
+                        }
+                    })
+        })
     },
-    GetBanners: () => {    
-        return new Promise(async(resolve, reject) => {
+    GetBanners: () => {
+        return new Promise(async (resolve, reject) => {
             let banner = await db.get().collection(collection.BANNER_COLLECTION)
-            .find().toArray();
+                .find().toArray();
             resolve(banner);
         })
     },
-    BannerList:(bannerId) => {    
+    BannerList: (bannerId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.BANNER_COLLECTION)
-            .updateOne({_id: new ObjectId(bannerId)},
-            {
-                $set:
-                {
-                    status:true
-                }
-            }).then((response) => {
-                resolve();
-            })
+                .updateOne({ _id: new ObjectId(bannerId) },
+                    {
+                        $set:
+                        {
+                            status: true
+                        }
+                    }).then((response) => {
+                        resolve();
+                    })
         })
     },
-    UnListbanner:(bannerId) => {    
+    UnListbanner: (bannerId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.BANNER_COLLECTION)
-            .updateOne({_id: new ObjectId(bannerId)},
-            {
-                $set:
-                {
-                    status:false
-                }
-            }).then((response) => {
-                resolve();
-            })
+                .updateOne({ _id: new ObjectId(bannerId) },
+                    {
+                        $set:
+                        {
+                            status: false
+                        }
+                    }).then((response) => {
+                        resolve();
+                    })
         })
     },
     DeleteBanner: (bannerId) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.BANNER_COLLECTION)
-            .deleteOne(
-                {
-                    _id: new ObjectId(bannerId)
+                .deleteOne(
+                    {
+                        _id: new ObjectId(bannerId)
+                    }
+                ).then((response) => {
+                    resolve()
+                })
+        })
+    },
+    GetCategoryCount: () => {
+        return new Promise(async (resolve, reject) => {
+            const category = await db.get().collection(collection.PRODUCT_CATEGORY).find({ categorystatus: true }).toArray()
+            resolve(category.length)
+        })
+    },
+    GetProductCount: () => {
+        return new Promise(async (resolve, reject) => {
+            const productCount = await db.get().collection(collection.PRODUCT_COLLECTION).countDocuments({ productstatus: true })
+            resolve(productCount)
+        })
+    },
+    GetOrderCount: async () => {
+        const orderCount = await db.get().collection(collection.ORDER_COLLECTION).countDocuments({ status: 'deliverd' })
+        return orderCount
+    },
+    GetTotalRevenue: async () => {
+        const totalRevenue = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+            {
+                $match: {
+                    status: 'deliverd'
                 }
-            ).then((response) => {
-                resolve()
-            })
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalAmount: {
+                        $sum: '$GrandTotal'
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    "total": '$totalAmount'
+                }
+            }
+        ]).toArray()
+        return totalRevenue
+    },
+    MontlySales: async (startDate, endDate) => {
+        const salesAmount = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+            { $match: { status: 'deliverd' } },
+            { $match: { date: { $gte: startDate, $lt: endDate } } },
+            { $group: { _id: null, total: { $sum: '$GrandTotal' } } },
+        ]).toArray()
+        return salesAmount
+    },
+    GetOrderStatics: () => {
+        return new Promise(async (resolve, reject) => {
+            const orderStatistics = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $group: {
+                        _id: "$status",
+                        count: { $sum: 1 },
+                    }
+                }
+
+            ]).toArray()
+            resolve(orderStatistics)
+        })
+    },
+    GetSaleStatics: () => {
+        return new Promise(async (resolve, reject) => {
+            let saleStatistics = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                { $match: { 'status': 'deliverd' } },
+                {
+                    $group: {
+                        '_id': { $month: '$date' },
+                        'count': { '$sum': 1 }
+                    }
+                }
+            ]).toArray()
+            resolve(saleStatistics)
+        })
+    },
+    GetAllSales: () => {
+        return new Promise(async (resolve, reject) => {
+            let orders = await db.get().collection(collection.ORDER_COLLECTION)
+                .aggregate([
+                    {
+                        '$match': {
+                            'status': 'deliverd'
+                        }
+                    },
+                    {
+                        '$lookup': {
+                            'from': 'user',
+                            'localField': 'userId',
+                            'foreignField': '_id',
+                            'as': 'userDetails'
+                        }
+                    }
+                ]).toArray()
+            console.log("orders", orders);
+            resolve(orders)
+        })
+    },
+    GetEditBanner: (bannerId) => {
+        return new Promise(async (resolve, reject) => {
+            const banner = await db.get().collection(collection.BANNER_COLLECTION).findOne({ _id: new objectId(bannerId) })
+            resolve(banner)
+        })
+    },
+    EditBannerPost: (banner, bannerId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.BANNER_COLLECTION)
+                .updateOne({ _id: new objectId(bannerId) },
+                    {
+                        $set: {
+                            head: banner.head,
+                            text: banner.text,
+                        }
+                    })
         })
     }
 }

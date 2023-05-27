@@ -41,7 +41,7 @@ router.get('/manageaddress',middleware.checkUserLoggedIn,usercontroller.managead
 router.post('/manageadd-address',middleware.checkUserLoggedIn,usercontroller.manageaddaddress)
 router.post('/editaddress/:id',middleware.checkUserLoggedIn,usercontroller.editaddress)
 router.get('/remove-address/:id',middleware.checkUserLoggedIn,usercontroller.removeaddress)
-router.post('/search',usercontroller.search)
+router.post('/search',middleware.checkUserLoggedIn,usercontroller.search)
 router.get('/addtowish/:id',middleware.checkUserLoggedIn,usercontroller.addtowish)
 router.get('/wishlist',middleware.checkUserLoggedIn,usercontroller.wishlistdetails)
 router.get('/removewhislistproduct/:id',usercontroller.removewishlistproduct)

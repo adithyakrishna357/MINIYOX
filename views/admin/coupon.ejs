@@ -1,6 +1,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css"
     integrity="sha512-tlEAlF6T11i6aTpU6rNCnMxRvI7X9B1Fg/7TWG3q+lIAn7yQhAXYnxb7qfgEGqEa70gX2Q5mb5e5hWdPvC65Rw=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<style>
+    label.error {
+        color: rgb(210, 67, 67);
+        font-size: 12px;
+    }
+</style>
 <main class="main-wrap">
     <section class="content-main">
         <div class="content-header">
@@ -29,11 +36,11 @@
 
                                         <th>Index</th>
                                         <th>Coupon code</th>
-                                        <th >Created date</th>
-                                        <th >Expirey date</th>
-                                        <th >Status</th>
-                                        <th >Edit</th>
-                                        <th >Delete</th>
+                                        <th>Created date</th>
+                                        <th>Expirey date</th>
+                                        <th>Status</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -58,32 +65,32 @@
                                                     <%= coupons[i].expirydate %>
                                                 </b>
                                             </td>
-                                            <% if (coupons[i].expired) { %> 
-                                            <td>
-                                                <b class="text-danger">
-                                                    Expired
-                                                </b>
-                                            </td>
-                                            <% } else { %>
+                                            <% if (coupons[i].expired) { %>
                                                 <td>
-                                                    <b class="text-success">
-                                                        Active
+                                                    <b class="text-danger">
+                                                        Expired
                                                     </b>
                                                 </td>
-                                                <% } %>
-                                                <td>
-                                                    <a class="btn btn-sm font-sm rounded btn-brand"
-                                                                 data-bs-toggle="modal"
+                                                <% } else { %>
+                                                    <td>
+                                                        <b class="text-success">
+                                                            Active
+                                                        </b>
+                                                    </td>
+                                                    <% } %>
+                                                        <td>
+                                                            <a class="btn btn-sm font-sm rounded btn-brand"
+                                                                data-bs-toggle="modal"
                                                                 data-bs-target="#modal<%=coupons[i]._id%>">
                                                                 <i class="material-icons md-edit"></i> Edit
                                                             </a>
-                                                </td>
-                                                <td>
-                                                    <a href="/admin/deletecoupon/<%=coupons[i]._id%>"
-                                                        class="btn btn-sm font-sm rounded btn-danger">
-                                                        Delete
-                                                    </a>
-                                                </td>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/admin/deletecoupon/<%=coupons[i]._id%>"
+                                                                class="btn btn-sm font-sm rounded btn-danger">
+                                                                Delete
+                                                            </a>
+                                                        </td>
                                         </tr>
                                         <% } %>
                                 </tbody>
@@ -107,7 +114,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/admin/addcoupon" method="post">
+                <form action="/admin/addcoupon" method="post" id="coupon-add-form">
                     <div class="mb-4">
                         <label for="product_name" class="form-label">Coupon code</label>
                         <input type="text" placeholder="Type here" name="couponcode" class="form-control"
@@ -115,23 +122,21 @@
                     </div>
                     <div class="mb-4">
                         <label for="product_name" class="form-label">Discount amount</label>
-                        <input type="number" placeholder="Type here" name="discount" class="form-control"
+                        <input type="number" placeholder="Type here" required name="discount" class="form-control"
                             id="discount" />
                     </div>
                     <div class="mb-4">
                         <label for="product_name" class="form-label">Expiry date</label>
-                        <input type="date" placeholder="Type here" name="expirydate" class="form-control"
-                            id="category" />
+                        <input type="date" placeholder="Type here" name="expirydate" class="form-control" id="myDate" />
                     </div>
 
 
-
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="submitcategory" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" id="submitcategory" class="btn btn-primary">Save</button>
-            </div>
-            </form>
         </div>
     </div>
 </div>
@@ -142,30 +147,30 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Coupon</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/admin/editcoupon/<%=coupons[i]._id%>" method="post" >
+                    <form action="/admin/editcoupon/<%=coupons[i]._id%>" method="post" id="coupon-edit-form">
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Coupon code</label>
-                            <input type="text" value="<%= coupons[i].couponcode %>" name="couponcode" class="form-control"
-                                id="couponcode" />
+                            <input type="text" value="<%= coupons[i].couponcode %>" name="couponcode"
+                                class="form-control" id="inputString" />
                         </div>
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Discount amount</label>
-                            <input type="number" value="<%= coupons[i].discount %>" name="discount" class="form-control"
-                                id="discount" />
+                            <input type="number" value="<%= coupons[i].discount %>" required name="discount"
+                                class="form-control" id="discount" />
                         </div>
-                        
+
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Expiry date</label>
-                            <input type="date" value="<%= coupons[i].expirydate %>"  name="expirydate" class="form-control"
-                                id="category" />
+                            <input type="date" value="<%= coupons[i].expirydate %>" name="expirydate"
+                                class="form-control" id="Date" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit"  class="btn btn-primary">Submit</button>
+                            <button type="submit" id="validateButton" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -176,26 +181,76 @@
 
 
 
-<!-- jQuery and Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"
-    integrity="sha512-zHps82IkB2Qa8ikvPgo9ALZgnzG1sTFR1+UeM6U/bPafOwT6lwduLvx7geRzgZI9CKN/dz3nM3/NVhFksIuQ7A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- jQuery and Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"
+            integrity="sha512-zHps82IkB2Qa8ikvPgo9ALZgnzG1sTFR1+UeM6U/bPafOwT6lwduLvx7geRzgZI9CKN/dz3nM3/NVhFksIuQ7A=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script>
-    $(document).ready(function () {
-        $('#myTable').DataTable({
-            "paging": true,   // enable pagination
-            "ordering": true, // enable sorting
-            "searching": true // enable searching
-        });
-    });
-
-
+        <script>
+            $(document).ready(function () {
+                $('#myTable').DataTable({
+                    "paging": true,   // enable pagination
+                    "ordering": true, // enable sorting
+                    "searching": true // enable searching
+                });
+            });
 
 
+        </script>
+        <script>
+            $(document).ready(function () {
 
+                $('#coupon-add-form').validate({
+                    rules: {
+                        couponcode: {
+                            required: true,
+                            // uppercaseOnly: true
+                            // number:true   
+                        }
+                    },
+                    messages: {
+                        couponcode: {
+                            required: 'The field is required.',
+                        }
+                    },
+                    submitHandler: function (form) {
+                        // Handle form submission here
+                        form.submit();
+                    }
+                });
+            });
+        </script>
+        <script>
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("myDate").setAttribute("min", today);
+        </script>
+        <script>
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("Date").setAttribute("min", today);
+        </script>
+        <script>
+            $(document).ready(function () {
 
-</script>
+                $('#coupon-edit-form').validate({
+                    rules: {
+                        couponcode: {
+                            required: true,
+                            // uppercaseOnly: true,
+                            // Number:true   
+                        }
+                    },
+                    messages: {
+                        couponcode: {
+                            required: 'The Field  is required.',
+                        }
+                    },
+                    submitHandler: function (form) {
+                        // Handle form submission here
+                        form.submit();
+                    }
+                });
+            });
+        </script>

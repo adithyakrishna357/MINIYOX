@@ -55,7 +55,13 @@
                         </h4>
 
                         <span class="mtext-106 cl2">
-                            Rs <%= productdetails.product_price%>
+                            <% if ( productdetails.Offer>0 ) { %>
+                                <del class="mr-2"> ₹ <%=productdetails.product_price%> </del>
+
+                                <strong> ₹ <%=(productdetails.product_price-productdetails.Offer)%> </strong>
+                            <% } else { %>
+                                ₹ <%= productdetails.product_price %>
+                            <% }%>
                         </span>
 
                         <p class="stext-102 cl3 p-t-23">

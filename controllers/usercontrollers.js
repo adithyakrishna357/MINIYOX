@@ -163,7 +163,6 @@ module.exports = {
                 Message = "Mobile Number is not registered";
                 res.redirect('/otplogin')
             }
-
         })
 
     },
@@ -223,10 +222,21 @@ module.exports = {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
         }
         let totalprice = 0;
+
         for (var i = 0; i < products.length; i++) {
-            totalprice = totalprice + products[i].subTotal
-            products[i].productsDetails.product_price = products[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-            products[i].subTotal = products[i].subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            if (products[i].productsDetails.Offer > 0) {
+                products[i].productsDetails.product_price = (products[i].productsDetails.product_price - products[i].productsDetails.Offer)
+                products[i].subTotal = (products[i].subTotal - (products[i].products.quantity * products[i].productsDetails.Offer))
+                totalprice = totalprice + products[i].subTotal
+                products[i].productsDetails.product_price = products[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                products[i].subTotal = products[i].subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            }
+            else {
+                totalprice = totalprice + products[i].subTotal
+                products[i].productsDetails.product_price = products[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                products[i].subTotal = products[i].subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+
+            }
         }
         totalprice = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         res.render('user/shoppingcart', { user, userHeader: true, cartcount, products, totalprice })
@@ -274,9 +284,18 @@ module.exports = {
         }
         let totalprice = 0;
         for (var i = 0; i < products.length; i++) {
-            totalprice = totalprice + products[i].subTotal
-            products[i].productsDetails.product_price = products[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-            products[i].subTotal = products[i].subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            if (products[i].productsDetails.Offer > 0) {
+                products[i].productsDetails.product_price = (products[i].productsDetails.product_price - products[i].productsDetails.Offer)
+                products[i].subTotal = (products[i].subTotal - (products[i].products.quantity * products[i].productsDetails.Offer))
+                totalprice = totalprice + products[i].subTotal
+                products[i].productsDetails.product_price = products[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                products[i].subTotal = products[i].subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            }
+            else {
+                totalprice = totalprice + products[i].subTotal
+                products[i].productsDetails.product_price = products[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                products[i].subTotal = products[i].subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            }
         }
         totalprice = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         const address = await userhelper.GetAddress(req.session.user._id)
@@ -452,7 +471,9 @@ module.exports = {
             orders[i].GrandTotal = orders[i].GrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].productsDetails.product_price = orders[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].subtotal = orders[i].subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-            orders[i].discount = orders[i].discount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            if(orders[i].discount){
+                orders[i].discount = orders[i].discount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            }
             orders[i].date = orders[i].date.toLocaleString()
         }
         total = total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
@@ -617,17 +638,17 @@ module.exports = {
             console.log(error);
         }
     },
-    editaddress:async(req,res)=>{
-        const userId= req.session.user._id
+    editaddress: async (req, res) => {
+        const userId = req.session.user._id
         const addressId = req.params.id
 
-        try{
-            await userhelper.EditAddress(req.body,userId,addressId).then(()=>{
+        try {
+            await userhelper.EditAddress(req.body, userId, addressId).then(() => {
                 res.redirect('/manageaddress')
             })
 
         }
-        catch(err){
+        catch (err) {
             console.log(err);
         }
     },
@@ -635,7 +656,7 @@ module.exports = {
         const addrId = req.params.id;
         const userId = req.session.user._id;
         userhelper.RemoveProfileAddress(userId, addrId).then(() => {
-            res.json({ status: true})
+            res.json({ status: true })
         })
     },
     search: async (req, res) => {
@@ -720,7 +741,7 @@ module.exports = {
             }
         })
     },
-    getwallet:async(req,res)=>{
+    getwallet: async (req, res) => {
         const userId = req.session.user._id;
         const user = req.session.user
         const userDetails = await userhelper.GetUserDetails(userId)
@@ -729,6 +750,6 @@ module.exports = {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
         }
         const wallet = await userhelper.FindOneWallet(userId)
-        res.render('user/mywallet',{user,userHeader:true,cartcount,userDetails,wallet})
+        res.render('user/mywallet', { user, userHeader: true, cartcount, userDetails, wallet })
     }
 }

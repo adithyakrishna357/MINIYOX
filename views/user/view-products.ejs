@@ -101,7 +101,7 @@
                         <% } %>
                             <% } %>
 
-                               
+
             </div>
 
             <div class="flex-w flex-c-m m-tb-10">
@@ -180,7 +180,7 @@
                             </li>
 
                             <li class="p-b-6">
-                                <a href="/view-products?filter=₹0.00 - ₹1000.00" class="filter-link stext-106 trans-04" >
+                                <a href="/view-products?filter=₹0.00 - ₹1000.00" class="filter-link stext-106 trans-04">
                                     ₹0.00 - ₹1000.00
                                 </a>
                             </li>
@@ -223,7 +223,8 @@
                                             <img src="images/productempty.png" width="150" height="150"
                                                 class="img-fluid mb-4 mr-3">
                                             <h3><strong>No products Found...!!!</strong></h3>
-                                            <a href="/view-products" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue
+                                            <a href="/view-products" class="btn btn-primary cart-btn-transform m-3"
+                                                data-abc="true">continue
                                                 shopping</a>
                                         </div>
                                     </div>
@@ -274,18 +275,26 @@
                                             </p>
 
                                             <span class="stext-105 cl3">
-                                                Rs <%= products[i].product_price %>
+                                                <% if ( products[i].Offer>0 ) { %>
+                                                    <del class="mr-2"> ₹ <%=products[i].product_price%> </del>
+
+                                                    <strong> ₹ <%=(products[i].product_price-products[i].Offer)%> </strong>
+                                                <% } else { %>
+                                                    ₹ <%= products[i].product_price %>
+                                                <% }%>
                                             </span>
                                         </div>
                                         <div class="block2-txt-child2 flex-r p-t-3">
-                                            <a href="#" data-product="<%= products._id%>" id="add-bt" class="btn-addwish-b2 dis-block pos-relative add-to-wishlist">
+                                            <a href="#" data-product="<%= products._id%>" id="add-bt"
+                                                class="btn-addwish-b2 dis-block pos-relative add-to-wishlist">
                                                 <img class="icon-heart1 dis-block trans-04"
                                                     src="/images/icons/icon-heart-01.png" alt="ICON">
                                                 <img class="icon-heart2 dis-block trans-04 ab-t-l"
-                                                    src="/images/icons/icon-heart-02.png" alt="ICON" data-product="<%= products[i]._id%>">
+                                                    src="/images/icons/icon-heart-02.png" alt="ICON"
+                                                    data-product="<%= products[i]._id%>">
                                             </a>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -373,61 +382,61 @@
     });
 </script>
 
-<
-<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    const addtowishList = async (proId) => {
-        try {
-            const res = await axios({
-                method: "GET",
-                url: `/addtowish/${proId}`
-            })
-            if (res.data.status === "success") {
-                swal({
-                    title: "Added to Wishlist",
-                    text: "This action cannot be undone.",
-                    icon: "success"
+< <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const addtowishList = async (proId) => {
+            try {
+                const res = await axios({
+                    method: "GET",
+                    url: `/addtowish/${proId}`
                 })
+                if (res.data.status === "success") {
+                    swal({
+                        title: "Added to Wishlist",
+                        text: "This action cannot be undone.",
+                        icon: "success"
+                    })
+                }
+                else if (res.data.status === "not success") {
+                    swal({
+                        title: "Already exist in your wishlist",
+                        text: "This action cannot be undone.",
+                        icon: "info"
+                    })
+                }
             }
-            else if (res.data.status === "not success") {
-                swal({
-                    title: "Already exist in your wishlist",
-                    text: "This action cannot be undone.",
-                    icon: "info"
-                })
+            catch (err) {
+                console.log(err);
             }
         }
-        catch (err) {
-            console.log(err);
-        }
-    }
-    const addToWishlistElements = document.getElementsByClassName('add-to-wishlist');
+        const addToWishlistElements = document.getElementsByClassName('add-to-wishlist');
 
-// Iterate through each element
- Array.from(addToWishlistElements).forEach((element) => {
-  element.addEventListener('click', function(event) {
-    event.preventDefault();
-    addtowishList(event.target.dataset.product);
-  });
-});
+        // Iterate through each element
+        Array.from(addToWishlistElements).forEach((element) => {
+            element.addEventListener('click', function (event) {
+                event.preventDefault();
+                addtowishList(event.target.dataset.product);
+            });
+        });
 
 
 
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const totalCountInput = document.getElementById('totalCount');
-        const totalCount = Number(totalCountInput.value);
-        const currentPageInput = document.getElementById('currentPage');
-        const currentPage = Number(currentPageInput.value);
-        const totalPages = Math.ceil(totalCount / 8);
-        let page = currentPage || 1;
-        const paginationElement = document.querySelector('.pagination');
-        let pageLinks = '';
-        for (let i = 1; i <= totalPages; i++) {
-            pageLinks += `<ul style="list-style-type: none;"><li class="page-item${i === page ? ' active' : ''}"><a class="page-link" style="color: white;background-color: rgb(157,49,102);" href="?page=${i}">${i}</a></li></ul>`;
-        }
-        paginationElement.innerHTML = pageLinks;
-    });
-</script>
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const totalCountInput = document.getElementById('totalCount');
+            const totalCount = Number(totalCountInput.value);
+            const currentPageInput = document.getElementById('currentPage');
+            const currentPage = Number(currentPageInput.value);
+            const totalPages = Math.ceil(totalCount / 8);
+            let page = currentPage || 1;
+            const paginationElement = document.querySelector('.pagination');
+            let pageLinks = '';
+            for (let i = 1; i <= totalPages; i++) {
+                pageLinks += `<ul style="list-style-type: none;"><li class="page-item${i === page ? ' active' : ''}"><a class="page-link" style="color: white;background-color: rgb(157,49,102);" href="?page=${i}">${i}</a></li></ul>`;
+            }
+            paginationElement.innerHTML = pageLinks;
+        });
+    </script>

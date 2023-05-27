@@ -59,9 +59,15 @@
                                                     </div>
                                                 </a>
                                             </td>
-                                            <td width="15%" class="price mt-15 text-left"
+                                            <td width="13%" class="price mt-15 text-left"
                                                 style="padding-left: 10px;padding-top:35px">
-                                                <%= products[i].productDetails[0].product_price%></td>
+                                                <% if ( products[i].productDetails[0].Offer>0 ) { %>
+                                                    <del class="mr-2"> ₹ <%=products[i].productDetails[0].product_price%> </del>
+
+                                                    <strong>   ₹ <%=(products[i].productDetails[0].product_price-products[i].productDetails[0].Offer)%> </strong>
+                                                <% } else { %>
+                                                    ₹ <%= products[i].productDetails[0].product_price %>
+                                                <% }%></td>
                                             <td class="text-left" style="padding-top: 28px;">
                                                 <button
                                                     class="btn btn-sm btn-brand rounded font-sm mt-15 js-addcart-detail js-addcart-btn btn-addcart-btn"

@@ -274,7 +274,13 @@
                                             </p>
 
                                             <span class="stext-105 cl3">
-                                                Rs <%= products[i].product_price %>
+                                                <% if ( products[i].Offer>0 ) { %>
+                                                    <del class="mr-2"> ₹ <%=products[i].product_price%> </del>
+
+                                                    <strong> ₹ <%=(products[i].product_price-products[i].Offer)%> </strong>
+                                                <% } else { %>
+                                                    ₹ <%= products[i].product_price %>
+                                                <% }%>
                                             </span>
                                         </div>
                                         <div class="block2-txt-child2 flex-r p-t-3">

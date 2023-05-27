@@ -131,10 +131,11 @@
                                                 TOTAL</b></span><span style="font-size: 18px;"> : <%=locals.total%>
                                         </span>
                                     </p>
-                                    <!-- <p class="text-black float-start " style="margin-left: -3rem;"><span
-                                        class="text-black me-3" style="font-weight: 800; font-size: larger;"> <b>OFFER
-                                            PRICE</b></span><span style="font-size: 18px;"> :
-                                        <%=locals.orders[0].offerPrice%></span></p> -->
+                                    <% if (orders[0].discount) { %>
+                                    <p class="text-black float-start " style="margin-left: -3rem;"><span
+                                        class="text-black me-3" style="font-weight: 800; font-size: larger;"> <b>COUPON DISCOUNT</b></span><span style="font-size: 18px;"> :
+                                        <%=locals.orders[0].discount%></span></p>
+                                        <% } %>
                                     <p class="text-black float-start " style="margin-left: -3rem;"><span
                                             class="text-black me-3" style="font-weight: 800; font-size: larger;">
                                             <b>GRAND

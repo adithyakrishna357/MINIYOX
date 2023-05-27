@@ -29,6 +29,7 @@ module.exports = {
     },
     AddProduct_Post: (productData, callback) => {
         productData.product_price = parseInt(productData.product_price)
+        productData.Offer = parseInt(productData.Offer)
         productData.stock = parseInt(productData.stock)
         productData.product_category = new ObjectId(productData.product_category)
         productData.productstatus = true;
@@ -61,6 +62,7 @@ module.exports = {
     PostEditProduct: (productData, productId) => {
         return new Promise((resolve, reject) => {
             productData.stock = parseInt(productData.stock)
+            productData.Offer = parseInt(productData.Offer)
             productData.product_price = parseInt(productData.product_price)
             productData.product_category = new ObjectId(productData.product_category)
             db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: new ObjectId(productId) }, {
@@ -69,6 +71,7 @@ module.exports = {
                     product_description: productData.product_description,
                     product_category: productData.product_category,
                     product_price: productData.product_price,
+                    Offer:productData.Offer,
                     stock: productData.stock
                 }
             })

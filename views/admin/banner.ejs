@@ -25,6 +25,7 @@
             <th scope="col">Banner text</th>
             <!-- {{!-- <th scope="col">Update</th> --}} -->
             <th scope="col">status</th>
+            <th scope="col">Update</th>
             <th scope="col">Delete</th>
           </tr>
         </thead>
@@ -58,6 +59,10 @@
                     <a href="/admin/listbanner/<%= banner[i]._id %>" class="btn btn-danger btn-sm">LISTED</a>
                   </td>
                   <% } %>
+                  <td>
+                    <a href="/admin/editbanner/<%= banner[i]._id %>" class="btn btn-dark btn-sm"
+                      >Edit</a>
+                  </td>
                     <td>
                       <a href="/admin/deletebanner/<%= banner[i]._id %>" class="btn btn-danger btn-sm"
                         onclick="return confirm('Do you want to delete?')">Delete</a>

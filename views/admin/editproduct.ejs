@@ -25,7 +25,7 @@
                             <div class="mb-4">
                                 <label class="form-label">Category</label>
                                 <select class="form-select"   required name="product_category">
-                                    <option selected disabled >Select a Category</option>
+                                    <option selected disabled ><%=product.product_category%></option>
                                     <% for (var i=0; i < categorie.length; i++) { %>
                                         <% if (categorie[i].categorystatus) { %>
                                             <option value="<%= categorie[i]._id %>">
@@ -42,6 +42,12 @@
                                     name="product_price">
                             </div>
                             <div class="mb-4">
+                                <label class="form-label">Offer</label>
+                                <input type="number" placeholder="Enter" required value="<%=product.Offer%>" class="form-control"
+                                    name="Offer">
+
+                            </div>
+                            <div class="mb-4">
                                 <label class="form-label">Stock</label>
                                 <input type="number" value="<%=product.stock%>" required class="form-control"
                                     name="stock">
@@ -54,6 +60,7 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <h4>Product Image</h4>
+                                <p style="font-size: 11px; font-family: 'Spartan','sans-serif';">Edit all images together</p>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
