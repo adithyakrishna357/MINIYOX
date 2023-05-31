@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
-// const adminHelper=require("../helpers/adminhelper");
+
 const admincontroller = require('../controllers/admincontrollers');
 const upload = require('../utils/multer')
-const middlware= require('../util/middleware');
-const middleware = require('../util/middleware');
 const {checkAdminLoggedIn} = require('../util/middleware')
 
 router.get('/', admincontroller.homepage)
@@ -12,37 +10,37 @@ router.get('/login', admincontroller.adminlogin)
 router.post('/login',admincontroller.adminloginpost)
 router.get("/logout",admincontroller.adminlogout)
 router.get("/adminproductview", checkAdminLoggedIn,admincontroller.productpageget)
-router.get("/productcategory",middlware.checkAdminLoggedIn,admincontroller.productcategory)
-router.post("/addcategory",middlware.checkAdminLoggedIn,admincontroller.addcategory)
-router.get("/addproduct",middlware.checkAdminLoggedIn,admincontroller.addproduct)
-router.post("/addproduct", upload.array('image'),middlware.checkAdminLoggedIn,admincontroller.addproductpost)
-router.get("/adminuserlist",middlware.checkAdminLoggedIn,admincontroller.adminuserlist)
-router.get('/editproduct/:id',middlware.checkAdminLoggedIn,admincontroller.editproductget)
-router.post('/editproduct/:id',upload.array('image'),middlware.checkAdminLoggedIn,admincontroller.editproductpost)
-router.post('/editcategory',middlware.checkAdminLoggedIn,admincontroller.editcategorypost)
-router.get('/listcategory/:id',middlware.checkAdminLoggedIn,admincontroller.listcategory);
-router.get('/unlistcategory/:id',middlware.checkAdminLoggedIn,admincontroller.unlistcategory);
-router.get('/listproduct/:id',middlware.checkAdminLoggedIn,admincontroller.listproduct)
-router.get('/unlistproduct/:id',middlware.checkAdminLoggedIn,admincontroller.unlistproduct)
-router.get('/blockuser/:id',middlware.checkAdminLoggedIn,admincontroller.blockuser)
-router.get('/unblockuser/:id',middlware.checkAdminLoggedIn,admincontroller.unblockuser)
-router.get('/orderlistview',middlware.checkAdminLoggedIn,admincontroller.orderlistrender)
-router.post('/change-order-status',middlware.checkAdminLoggedIn,admincontroller.changeorderstatus)
-router.get('/order-details/:id',middleware.checkAdminLoggedIn,admincontroller.ordersandusers)
-router.get('/getcoupon',middleware.checkAdminLoggedIn,admincontroller.couponget)
-router.post('/addcoupon',middleware.checkAdminLoggedIn,admincontroller.addcoupon)
-router.post('/editcoupon/:id',middleware.checkAdminLoggedIn,admincontroller.editcouponpost)
-router.get('/deletecoupon/:id',middleware.checkAdminLoggedIn,admincontroller.deletecoupon)
-router.get('/bannerview',middleware.checkAdminLoggedIn,admincontroller.getbanners)
-
-router.get('/addbanner',middleware.checkAdminLoggedIn,admincontroller.addbanner)
-router.post('/addbanner',upload.single('image'),middleware.checkAdminLoggedIn,admincontroller.addbannerpost)
-router.get('/listbanner/:id',middleware.checkAdminLoggedIn,admincontroller.listbanner)
-router.get('/unlistbanner/:id',middleware.checkAdminLoggedIn,admincontroller.unlistbanner)
-router.get('/deletebanner/:id',middleware.checkAdminLoggedIn,admincontroller.deletebanner)
-router.get('/graphstatics',middleware.checkAdminLoggedIn,admincontroller.graphstatics)
-router.get('/salesreport',middleware.checkAdminLoggedIn,admincontroller.salesreport)
-router.get('/editbanner/:id',middleware.checkAdminLoggedIn,admincontroller.editbanner)
-router.post('/editbanner/:id',upload.single('image'),middleware.checkAdminLoggedIn,admincontroller.editbannerpost)
+router.get("/productcategory",checkAdminLoggedIn,admincontroller.productcategory)
+router.post("/addcategory",checkAdminLoggedIn,admincontroller.addcategory)
+router.get("/addproduct",checkAdminLoggedIn,admincontroller.addproduct)
+router.post("/addproduct", upload.array('image'),checkAdminLoggedIn,admincontroller.addproductpost)
+router.get("/adminuserlist",checkAdminLoggedIn,admincontroller.adminuserlist)
+router.get('/editproduct/:id',checkAdminLoggedIn,admincontroller.editproductget)
+router.post('/editproduct/:id',upload.array('image'),checkAdminLoggedIn,admincontroller.editproductpost)
+router.post('/editcategory',checkAdminLoggedIn,admincontroller.editcategorypost)
+router.get('/listcategory/:id',checkAdminLoggedIn,admincontroller.listcategory);
+router.get('/unlistcategory/:id',checkAdminLoggedIn,admincontroller.unlistcategory);
+router.get('/listproduct/:id',checkAdminLoggedIn,admincontroller.listproduct)
+router.get('/unlistproduct/:id',checkAdminLoggedIn,admincontroller.unlistproduct)
+router.get('/blockuser/:id',checkAdminLoggedIn,admincontroller.blockuser)
+router.get('/unblockuser/:id',checkAdminLoggedIn,admincontroller.unblockuser)
+router.get('/orderlistview',checkAdminLoggedIn,admincontroller.orderlistrender)
+router.post('/change-order-status',checkAdminLoggedIn,admincontroller.changeorderstatus)
+router.get('/order-details/:id',checkAdminLoggedIn,admincontroller.ordersandusers)
+router.get('/getcoupon',checkAdminLoggedIn,admincontroller.couponget)
+router.post('/addcoupon',checkAdminLoggedIn,admincontroller.addcoupon)
+router.post('/editcoupon/:id',checkAdminLoggedIn,admincontroller.editcouponpost)
+router.get('/deletecoupon/:id',checkAdminLoggedIn,admincontroller.deletecoupon)
+router.get('/bannerview',checkAdminLoggedIn,admincontroller.getbanners)
+router.get('/addbanner',checkAdminLoggedIn,admincontroller.addbanner)
+router.post('/addbanner',upload.single('image'),checkAdminLoggedIn,admincontroller.addbannerpost)
+router.get('/listbanner/:id',checkAdminLoggedIn,admincontroller.listbanner)
+router.get('/unlistbanner/:id',checkAdminLoggedIn,admincontroller.unlistbanner)
+router.get('/deletebanner/:id',checkAdminLoggedIn,admincontroller.deletebanner)
+router.get('/graphstatics',checkAdminLoggedIn,admincontroller.graphstatics)
+router.get('/salesreport',checkAdminLoggedIn,admincontroller.salesreport)
+router.get('/editbanner/:id',checkAdminLoggedIn,admincontroller.editbanner)
+router.post('/editbanner/:id',upload.single('image'),checkAdminLoggedIn,admincontroller.editbannerpost)
+router.post('/salesreportfilter',checkAdminLoggedIn,admincontroller.salesreportfiler)
 
 module.exports = router;

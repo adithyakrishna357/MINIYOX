@@ -1,0 +1,65 @@
+<% if ( wallet[0].transactions.length>0) { %>
+  <section class="container bg-white mt-3" style="overflow-x: hidden;">
+
+    <div class="text-center py-5">
+      <div class="d-flex">
+        <span class="mx-auto text-dark pb-4" style="font-size: larger;text-decoration: underline;">Wallet Transaction
+          Details</span>
+      </div>
+      <div class="row table-responsive col-lg-12">
+        <table class="table table-bordered" style="width:100%">
+          <thead class="text-dark">
+            <tr>
+              <th style="font-weight: bold;" scope="col">SI.No</th>
+              <th style="font-weight: bold;" scope="col">Date</th>
+              <th style="font-weight: bold;" scope="col">Transaction Id</th>
+              <th style="font-weight: bold;" scope="col">Transaction source</th>
+              <th style="font-weight: bold;" scope="col">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i=0; i < wallet[0].transactions.length; i++) { %>
+              <tr>
+                <th class="text-dark">
+                  <%= 1+i%>
+                </th>
+                <th class="text-dark">
+                  <%= wallet[0].transactions[i].date%>
+                </th>
+                <th class="text-dark">
+                  <%= wallet[0].transactions[i].transactionId%>
+                </th>
+                <th class="text-dark">
+                  <%= wallet[0].transactions[i].source%>
+                </th>
+                <th class="text-dark">
+                  <%= wallet[0].transactions[i].amount%>
+                </th>
+              </tr>
+              <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+<% } else { %>
+  <div class="container-fluid  mt-100">
+    <br><br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="">
+                <div class="card-body cart">
+                    <div class="col-sm-12 empty-cart-cls text-center">
+                        <img src="images/empty-wallet-add.png" width="150" height="150" class="img-fluid mb-4 mr-3">
+                        <h3><strong>You have no wallet transactions!!!</strong></h3>
+                        <h4>Make some wallet transactions to make me happy :)</h4>
+                        <a href="/view-products" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue
+                            shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br><br><br><br>
+</div>
+<% }%>

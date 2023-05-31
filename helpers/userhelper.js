@@ -3,6 +3,7 @@ const collection = require('../config/collections');
 const bcrypt = require('bcrypt');
 const { ObjectId } = require('mongodb');
 const { response } = require('express');
+const { v4: uuidv4 } = require('uuid');
 let message
 module.exports = {
     DoSigUp: (userData) => {
@@ -25,7 +26,7 @@ module.exports = {
                 userData.password = await bcrypt.hash(userData.password, 10);
                 db.get().collection(collection.USER_COLLECTION).insertOne(userData).then(async (data) => {
                     dataDoc = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: data.insertedId });
-                    resolve({ status: true, dataDoc});
+                    resolve({ status: true, dataDoc });
                 })
             }
         })
@@ -197,18 +198,18 @@ module.exports = {
             $push: { address: address }
         })
     },
-    EditAddress: async (address, userId,addressId) => {
+    EditAddress: async (address, userId, addressId) => {
         address._id = new ObjectId()
         address.pincode = parseInt(address.pincode)
         address.phone = parseInt(address.phone)
-        await db.get().collection(collection.USER_COLLECTION).updateOne({ _id: new ObjectId(userId),'address._id':new ObjectId(addressId) }, {
-            $set:{
-                'address.$.name':address.name,
-                'address.$.address':address.address,
-                'address.$.district':address.district,
-                'address.$.city':address.city,
-                'address.$.pincode':address.pincode,
-                'address.$.phone':address.phone
+        await db.get().collection(collection.USER_COLLECTION).updateOne({ _id: new ObjectId(userId), 'address._id': new ObjectId(addressId) }, {
+            $set: {
+                'address.$.name': address.name,
+                'address.$.address': address.address,
+                'address.$.district': address.district,
+                'address.$.city': address.city,
+                'address.$.pincode': address.pincode,
+                'address.$.phone': address.phone
             }
         })
     },
@@ -245,18 +246,18 @@ module.exports = {
         ]).toArray()
         return address
     },
-    AddOrder: async (userId, address, paymentMethod, subtotal, GrandTotal, products, status,coupon) => {
+    AddOrder: async (userId, address, paymentMethod, subtotal, GrandTotal, products, status, coupon) => {
         if (coupon) {
             var coupons = await db.get().collection(collection.COUPON_COLLECTION).findOne(
-                {couponcode: coupon}
+                { couponcode: coupon }
             )
-            if(coupons){
+            if (coupons) {
                 var couponCode = coupon
             }
-            
+
 
             try {
-                if(couponCode){
+                if (couponCode) {
                     const couponExist = await db.get().collection(collection.USER_COLLECTION).findOne(
                         {
                             _id: new ObjectId(userId),
@@ -264,7 +265,7 @@ module.exports = {
                         }
                     )
                     if (!couponExist) {
-                      var couponon = await  db.get().collection(collection.USER_COLLECTION).updateOne(
+                        var couponon = await db.get().collection(collection.USER_COLLECTION).updateOne(
                             {
                                 _id: new ObjectId(userId)
                             },
@@ -274,36 +275,36 @@ module.exports = {
                         )
                     }
                 }
-                
+
             }
             catch (err) {
                 console.log(err);
             }
         }
-        if(couponon) {
+        if (couponon) {
             userId = new ObjectId(userId)
             const paymentStatus = 'pending'
             const orderDate = new Date().toISOString().slice(0, 10)
             const date = new Date()
             const result = await db.get().collection(collection.ORDER_COLLECTION).insertOne(
-                { userId: userId, deliveryDetails: address, products: products, subtotal: subtotal, GrandTotal, paymentMethod, paymentStatus, date, orderDate, status,discount:coupons.discount }
+                { userId: userId, deliveryDetails: address, products: products, subtotal: subtotal, GrandTotal, paymentMethod, paymentStatus, date, orderDate, status, discount: coupons.discount }
             )
             return result
         }
-        else{
+        else {
             userId = new ObjectId(userId)
             const paymentStatus = 'pending'
             const orderDate = new Date().toISOString().slice(0, 10)
             const date = new Date()
             const result = await db.get().collection(collection.ORDER_COLLECTION).insertOne(
-                { userId: userId, deliveryDetails: address, products: products, subtotal: subtotal, GrandTotal, paymentMethod, paymentStatus, date, orderDate, status}
+                { userId: userId, deliveryDetails: address, products: products, subtotal: subtotal, GrandTotal, paymentMethod, paymentStatus, date, orderDate, status }
             )
             return result
         }
     },
     UpdateStock: async (productId, stock) => {
         await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({ _id: productId }, {
-            $inc: { "stock": -stock }
+            $inc: { "stock": stock }
         })
     },
     OrderStatusChange: async (orderId, status) => {
@@ -533,7 +534,7 @@ module.exports = {
             const couponExist = await db.get().collection(collection.USER_COLLECTION).findOne(
                 {
                     _id: new ObjectId(userId),
-                    usedCoupons: { $elemMatch: {couponCode } }
+                    usedCoupons: { $elemMatch: { couponCode } }
                 }
             )
             const coupon = await db.get().collection(collection.COUPON_COLLECTION)
@@ -549,23 +550,61 @@ module.exports = {
             }
         })
     },
-    GetBannersDetails:()=>{
-        return new Promise(async(resolve, reject) => {
+    GetBannersDetails: () => {
+        return new Promise(async (resolve, reject) => {
             let banner = await db.get().collection(collection.BANNER_COLLECTION)
-            .find().toArray();
+                .find().toArray();
             resolve(banner);
         })
     },
-    FindOneWallet:async(userId)=>{
-        const wallet = await db.get().collection(collection.WALLET_COLLECTION).findOne({user: new ObjectId(userId)})
+    FindOneWallet: async (userId) => {
+        const wallet = await db.get().collection(collection.WALLET_COLLECTION).findOne({ user: new ObjectId(userId) })
         return wallet
     },
-    UpdateWallet:async(userId,amount)=>{
-        await db.get().collection(collection.WALLET_COLLECTION).updateOne({user:new ObjectId(userId)},{
-            $inc:{amount:amount}
+    UpdateWallet: async (userId, amount) => {
+        await db.get().collection(collection.WALLET_COLLECTION).updateOne({ user: new ObjectId(userId) }, {
+            $inc: { amount: amount }
         })
     },
-    CreateWallet:async(userId,amount)=>{
-        await db.get().collection(collection.WALLET_COLLECTION).insertOne({user:new ObjectId(userId),amount:amount})
+    CreateWallet: async (userId, amount) => {
+        await db.get().collection(collection.WALLET_COLLECTION).insertOne({ user: new ObjectId(userId), amount: amount })
+    },
+    WalletTransAdd: (userId, status, amount) => {
+        return new Promise((resolve, reject) => {
+            userId = new ObjectId(userId);
+            const now = new Date();
+            const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+            let transactions = []
+            const transactionId = uuidv4(); 
+            receipt = {
+                transactionId: transactionId,
+                source: status,
+                date: date,
+                amount: Number(amount)
+            }
+            transactions.push(receipt);
+            db.get()
+                .collection(collection.WALLET_COLLECTION)
+                .updateOne(
+                    { user: userId },
+                    {
+                        $push: {
+                            transactions: receipt,
+                        },
+                    }
+                )
+                .then(() => {
+                    resolve();
+                })
+                .catch(() => {
+                    reject();
+                })
+        })
+    },
+    GetAllWallet:(userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            const userWallet = await db.get().collection(collection.WALLET_COLLECTION).find({user: new ObjectId(userId)}).toArray()
+            resolve(userWallet)
+        })
     }
 }

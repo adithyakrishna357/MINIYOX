@@ -210,11 +210,13 @@ module.exports = {
                     await userhelper.UpdateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
+                    await adminhelper.WalletTransAdd(userId,"cancelation",amount)
                 }
                 else {
                     await userhelper.CreateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
+                    await adminhelper.WalletTransAdd(userId,"cancelation",amount)
                 }
 
             }
@@ -226,11 +228,13 @@ module.exports = {
                     await userhelper.UpdateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
+                    await adminhelper.WalletTransAdd(userId,"returned",amount)
                 }
                 else {
                     await userhelper.CreateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
+                    await adminhelper.WalletTransAdd(userId,"returned",amount)
                 }
             }
             else {
@@ -362,6 +366,25 @@ module.exports = {
         }
         catch (err) {
             res.redirect('/admin/bannerview')
+        }
+    },
+    salesreportfiler:async(req,res)=>{
+        try{
+            const {startDate,endDate}= req.body;
+            
+            const orders = await adminhelper.salesreportfilterpost(startDate,endDate);
+            
+            const months = ["JAN","FEB","MARCH","APRIL","MAY","JUNE","JULY","AUG","SEP","OCT","NOV","DEC"];
+            for(let i=0;i<orders.length;i++){
+                orders[i].date = orders[i].date.getDate()+'-'+months[orders[i].date.getMonth()]+'-'+orders[i].date.getFullYear();
+                if(!orders[i].discount){
+                    orders[i].discount = 000
+                }
+            }
+            res.render('admin/salesreportfilter',{admin: true,layout: 'adminLayout',orders})
+        }
+        catch(err){
+            console.log(err);
         }
     }
 }

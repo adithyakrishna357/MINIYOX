@@ -23,9 +23,7 @@
         <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
             <div class="m-l-25 m-r--38 m-lr-0-xl">
                 <% if (products) { %>
-                <table class="table-shopping-cart">
-                    
-                    
+                    <table class="table-shopping-cart">
                         <div class="col-12">
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -40,103 +38,113 @@
                                     </thead>
                                     <tbody>
                                         <% for (var i=0; i < products.length; i++) { %>
-                                        <tr>
-                                            <td width="40%">
-                                                <a href="/productDetail/<%= products[i].productDetails[0]._id%>"
-                                                    class="item-center" onclick="viewDetails('{{this._id}}')">
-                                                    <div class="left">
-                                                        <img src="<%= products[i].productDetails[0].image[0]%>" style="width: 60px;height: 60px; " class="img-sm "
-                                                            alt="Userpic">
-                                                    </div>
-                                                    <div class="info pl-3">
-                                                        <h6 class="mb-0 title" style="font-family: 'Poppins-Regular' ;color: #3f4143;
+                                            <tr>
+                                                <td width="40%">
+                                                    <a href="/productDetail/<%= products[i].productDetails[0]._id%>"
+                                                        class="item-center" onclick="viewDetails('{{this._id}}')">
+                                                        <div class="left">
+                                                            <img src="<%= products[i].productDetails[0].image[0]%>"
+                                                                style="width: 60px;height: 60px; " class="img-sm "
+                                                                alt="Userpic">
+                                                        </div>
+                                                        <div class="info pl-3">
+                                                            <h6 class="mb-0 title" style="font-family: 'Poppins-Regular' ;color: #3f4143;
                                                         font-weight: 600;
                                                         line-height:1.5;">
-                                                            <%= products[i].productDetails[0].product_name%>
-                                            
-                                                            
-                                                        </h6>
-                                                    </div>
-                                                </a>
-                                            </td>
-                                            <td width="13%" class="price mt-15 text-left"
-                                                style="padding-left: 10px;padding-top:35px">
-                                                <% if ( products[i].productDetails[0].Offer>0 ) { %>
-                                                    <del class="mr-2"> ₹ <%=products[i].productDetails[0].product_price%> </del>
+                                                                <%= products[i].productDetails[0].product_name%>
 
-                                                    <strong>   ₹ <%=(products[i].productDetails[0].product_price-products[i].productDetails[0].Offer)%> </strong>
-                                                <% } else { %>
-                                                    ₹ <%= products[i].productDetails[0].product_price %>
-                                                <% }%></td>
-                                            <td class="text-left" style="padding-top: 28px;">
-                                                <button
-                                                    class="btn btn-sm btn-brand rounded font-sm mt-15 js-addcart-detail js-addcart-btn btn-addcart-btn"
-                                                    style="background-color:rgb(157,49,102);" type="submit"
-                                                    onclick="addTocart('<%= products[i].productDetails[0]._id%>')"
-                                                    ><i
-                                                        class="zmdi zmdi-shopping-cart"
-                                                        style="color:white;margin-top:12px">
-                                                    </i>
-                                                </button>
-                                            </td>
-                                            <td class="text-left" style="padding-top: 32px;">
-                                                <a href="/singleproductview/<%= products[i].productDetails[0]._id%>"
-                                                    class="btn btn-sm btn-brand rounded font-sm mt-15"
-                                                    style="background-color: rgb(174, 197, 217);border-color:rgb(174,197,217);color: #fff;">View
-                                                    Details</a>
-                                            </td>
-                                            <td class="text-left" style="padding-top: 28px;">
-                                                <button type="button"
-                                                    onclick="removeWishlistProduct('<%= products[i].productDetails[0]._id%>')"
-                                                    class="btn btn-sm" style="margin: 7%;">X</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <div class="text-center text-success">
-                                                <h4 id="delete-msg" class="font-italic"></h4>
-                                            </div>
-                                        </tr>
-                                        <% } %>
+
+                                                            </h6>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td width="13%" class="price mt-15 text-left"
+                                                    style="padding-left: 10px;padding-top:35px">
+                                                    <% if ( products[i].productDetails[0].Offer>0 ) { %>
+                                                        <del class="mr-2"> ₹
+                                                            <%=products[i].productDetails[0].product_price%>
+                                                        </del>
+
+                                                        <strong> ₹
+                                                            <%=(products[i].productDetails[0].product_price-products[i].productDetails[0].Offer)%>
+                                                        </strong>
+                                                        <% } else { %>
+                                                            ₹ <%= products[i].productDetails[0].product_price %>
+                                                                <% }%>
+                                                </td>
+                                                <td class="text-left" style="padding-top: 28px;">
+                                                    <button
+                                                        class="btn btn-sm btn-brand rounded font-sm mt-15 js-addcart-detail js-addcart-btn btn-addcart-btn"
+                                                        style="background-color:rgb(157,49,102);" type="submit"
+                                                        onclick="addTocart('<%= products[i].productDetails[0]._id%>')"><i
+                                                            class="zmdi zmdi-shopping-cart"
+                                                            style="color:white;margin-top:12px">
+                                                        </i>
+                                                    </button>
+                                                </td>
+                                                <td class="text-left" style="padding-top: 32px;">
+                                                    <a href="/singleproductview/<%= products[i].productDetails[0]._id%>"
+                                                        class="btn btn-sm btn-brand rounded font-sm mt-15"
+                                                        style="background-color: rgb(174, 197, 217);border-color:rgb(174,197,217);color: #fff;">View
+                                                        Details</a>
+                                                </td>
+                                                <td class="text-left" style="padding-top: 28px;">
+                                                    <button type="button"
+                                                        onclick="removeWishlistProduct('<%= products[i].productDetails[0]._id%>')"
+                                                        class="btn btn-sm" style="margin: 7%;">X</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <div class="text-center text-success">
+                                                    <h4 id="delete-msg" class="font-italic"></h4>
+                                                </div>
+                                            </tr>
+                                            <% } %>
                                     </tbody>
                                 </table> <!-- table-responsive.// -->
                             </div>
-                        
-                    <%} else {%>
-                    <div class="container-fluid  mt-100">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="">
-                                    <div class="card-body cart">
-                                        <div class="col-sm-12 empty-cart-cls text-center">
-                                            <img src="images/productempty.png" width="130" height="130"
-                                                class="img-fluid mb-4 mr-3">
-                                            <h3><strong>Your wishlist is Empty</strong></h3>
-                                            <h4>Add something to make me happy :)</h4>
-                                            <a href="/view-products" class="btn btn-primary cart-btn-transform m-3"
-                                                data-abc="true"
-                                                >continue
-                                                shopping</a>
+
+                            <%} else {%>
+                                <div class="container-fluid  mt-100">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="">
+                                                <div class="card-body cart">
+                                                    <div class="col-sm-12 empty-cart-cls text-center">
+                                                        <img src="images/productempty.png" width="130" height="130"
+                                                            class="img-fluid mb-4 mr-3">
+                                                        <h3><strong>Your wishlist is Empty</strong></h3>
+                                                        <h4>Add something to make me happy :)</h4>
+                                                        <a href="/view-products"
+                                                            class="btn btn-primary cart-btn-transform m-3"
+                                                            data-abc="true">continue
+                                                            shopping</a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <% } %>
-                </table>
+                                <% } %>
+                    </table>
             </div>
         </div>
     </div>
 </div>
 <script>
 
-function removeWishlistProduct(proId) {
+    function removeWishlistProduct(proId) {
         swal({
             title: "Are you sure?",
             text: "Do you want to remove this product from wishlist?",
             icon: "warning",
-            buttons: true,
-            dangerMode: true,
+            buttons: ["Cancel", "Remove"],
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, remove it!",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: false,
+            closeOnCancel: true,
         })
             .then((willDelete) => {
                 if (willDelete) {
@@ -145,10 +153,8 @@ function removeWishlistProduct(proId) {
                         method: 'GET',
                         success: (response) => {
                             $(proId).remove()
-                            // let msg = "Product removed"
-                            // $('#delete-msg').html(msg)
                             location.reload();
-                            
+
                         }
                     })
                 }

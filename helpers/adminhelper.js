@@ -2,6 +2,8 @@ const db = require('../config/connection');
 const collection = require('../config/collections');
 const { ObjectId } = require('mongodb');
 const objectId = require('mongodb-legacy').ObjectId;
+const moment = require('moment');
+const { v4: uuidv4 } = require('uuid');
 
 
 
@@ -187,7 +189,7 @@ module.exports = {
             }
             const couponExist = await db.get().collection(collection.COUPON_COLLECTION)
                 .findOne({ couponcode: coupon.couponcode });
-           
+
             const couponID = new objectId(couponId)
             if (couponExist) {
                 if (couponExist._id === couponID) {
@@ -411,6 +413,84 @@ module.exports = {
                             text: banner.text,
                         }
                     })
+        })
+    },
+    salesreportfilterpost: (startDate, endDate) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const start = moment(startDate, 'YYYY-MM-DD').toDate();
+                const end = moment(endDate, 'YYYY-MM-DD').toDate();
+
+                // Check if the dates are valid
+                if (!moment(start).isValid() || !moment(end).isValid()) {
+                    throw new Error('Invalid date format');
+                }
+
+                const orders = await db.get()
+                    .collection(collection.ORDER_COLLECTION)
+                    .aggregate([
+                        {
+                            $match: {
+                                status: "deliverd",
+                                date: {
+                                    $gte: start,
+                                    $lte: end,
+                                },
+                            },
+                        },
+                        {
+                            $lookup: {
+                                from: 'user',
+                                localField: 'userId',
+                                foreignField: '_id',
+                                as: 'userDetails',
+                            },
+                        },
+                        {
+                            $sort: {
+                                date: -1,
+                            },
+                        },
+                    ])
+                    .toArray();
+
+                resolve(orders);
+            } catch (err) {
+                console.error(err);
+                reject(err);
+            }
+        });
+    },
+    WalletTransAdd: (userId, status, amount) => {
+        return new Promise((resolve, reject) => {
+            userId = new ObjectId(userId);
+            const now = new Date();
+            const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+            let transactions = []
+            const transactionId = uuidv4(); 
+            receipt = {
+                transactionId: transactionId,
+                source: status,
+                date: date,
+                amount: Number(amount)
+            }
+            transactions.push(receipt);
+            db.get()
+                .collection(collection.WALLET_COLLECTION)
+                .updateOne(
+                    { user: userId },
+                    {
+                        $push: {
+                            transactions: receipt,
+                        },
+                    }
+                )
+                .then(() => {
+                    resolve();
+                })
+                .catch(() => {
+                    reject();
+                })
         })
     }
 }

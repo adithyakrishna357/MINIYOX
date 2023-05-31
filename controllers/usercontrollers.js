@@ -8,6 +8,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
+
 let message
 let Message
 let messaGe
@@ -384,10 +385,10 @@ module.exports = {
                     subtotal = parseInt(subtotal)
                     GrandTotal = parseInt(GrandTotal)
                     const result = await userhelper.AddOrder(userId, address, paymentMethod, subtotal, GrandTotal, products, status, coupon)
-                    var orderId = result.insertedId
-
+                    await userhelper.WalletTransAdd(userId, "order payment", GrandTotal)
+                    var orderId = result.insertedId;
                     products.forEach(async (product) => {
-                        await userhelper.UpdateStock(product.productId, product.quantity)
+                        await userhelper.UpdateStock(product.productId, -product.quantity)
                     });
 
                     await userhelper.PaymentStatusChange(orderId, 'paid')
@@ -445,10 +446,12 @@ module.exports = {
     },
     cancelorder: async (req, res, next) => {
         try {
+            const userId = req.session.user._id;
             let { orderId, status } = req.body
             const products = await userhelper.OrderProductAndQuantity(orderId)
             products.forEach(async (product) => {
                 await userhelper.UpdateStock(product.products.productId, product.products.quantity)
+                // await userhelper.WalletTransAdd(userId,"cancel order",GrandTotal)
                 await userhelper.OrderStatusChange(orderId, status)
             })
             res.json({
@@ -471,7 +474,7 @@ module.exports = {
             orders[i].GrandTotal = orders[i].GrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].productsDetails.product_price = orders[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].subtotal = orders[i].subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-            if(orders[i].discount){
+            if (orders[i].discount) {
                 orders[i].discount = orders[i].discount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             }
             orders[i].date = orders[i].date.toLocaleString()
@@ -593,7 +596,7 @@ module.exports = {
                 await userhelper.PaymentStatusChange(orderid, 'paid')
                 products.forEach(async (product) => {
                     product.quantity = product.quantity * -1
-                    await userhelper.UpdateStock(product.productId, product.quantity)
+                    await userhelper.UpdateStock(product.productId, -product.quantity)
                 })
                 await userhelper.DeleteCart(userId)
                 res.json({
@@ -751,5 +754,24 @@ module.exports = {
         }
         const wallet = await userhelper.FindOneWallet(userId)
         res.render('user/mywallet', { user, userHeader: true, cartcount, userDetails, wallet })
+    },
+    wallettranscations: async (req, res) => {
+        const user = req.session.user
+        // console.log(user);
+        let cartcount = null;
+        if (req.session.user) {
+            cartcount = await userhelper.GetCartCount(req.session.user._id)
+        }
+        const wallet = await userhelper.GetAllWallet(req.session.user._id);
+        for(let i=0;i<wallet[0].transactions.length;i++){
+            const newDate = new Date(wallet[0].transactions[i].date);
+            const year = newDate.getFullYear();
+            const month = newDate.getMonth() + 1;
+            const day = newDate.getDate();
+            const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
+            wallet[0].transactions[i].date = formattedDate;
+        }
+          console.log(wallet,"wwwwwwwwwwwwww");
+        res.render('user/wallettable', { user, userHeader: true,cartcount,wallet })
     }
 }
