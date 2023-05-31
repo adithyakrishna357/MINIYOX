@@ -18,7 +18,7 @@ module.exports = {
             const productsCount = await adminhelper.GetProductCount()
             const orderCount = await adminhelper.GetOrderCount()
             const totalRevenue = await adminhelper.GetTotalRevenue()
-            const total = totalRevenue[0].total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+            const total = totalRevenue[0]?.total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             const startMonthDate = new Date(new Date().getFullYear(), new Date().getMonth())
             const endMonthDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1)
             
