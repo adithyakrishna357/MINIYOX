@@ -9,7 +9,7 @@ module.exports = {
     DoSigUp: (userData) => {
         return new Promise(async (resolve, reject) => {
             userData.phone = Number(userData.phone);
-            userData.wallet=0;
+            
             const mobileExist = await db.get().collection(collection.USER_COLLECTION).findOne({
                 phone: userData.phone
             });

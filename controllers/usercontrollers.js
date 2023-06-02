@@ -16,6 +16,7 @@ let messaGe
 module.exports = {
     signuppost: (req, res) => {
         userhelper.DoSigUp(req.body).then((response) => {
+            
             console.log(response);
             if (response.status) {
                 req.session.userId = response._id;
@@ -23,6 +24,7 @@ module.exports = {
                 req.session.user = response.dataDoc;
                 console.log(req.session.user);
                 req.session.user.name = response.dataDoc.name;
+                userhelper.CreateWallet(response._id,0)
 
                 res.redirect(`/?user=${req.session.user}`);
             }
