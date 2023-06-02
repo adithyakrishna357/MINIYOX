@@ -24,7 +24,6 @@ module.exports = {
                 req.session.user = response.dataDoc;
                 console.log(req.session.user);
                 req.session.user.name = response.dataDoc.name;
-                userhelper.CreateWallet(response._id,0)
 
                 res.redirect(`/?user=${req.session.user}`);
             }
