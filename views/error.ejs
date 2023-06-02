@@ -33,15 +33,24 @@
 	<div id="notfound" class="d-flex justify-content-center align-items-center vh-100">
 		<div class="notfound">
 			<div class="notfound-404">
-                <img style="width: 34vw;" src="/images/error.jpg" alt="">
+				<img style="width: 34vw;" src="/images/error.jpg" alt="">
 				<h3 style="font-size: xx-large; font-family: auto;">Oops! Page not found</h3>
-				<h1 style="font-size: xxx-large;font-family: auto;"><span>E</span><span>R</span><span>R</span><span>0</span><span>R</span></h1>
+				<h1 style="font-size: xxx-large;font-family: auto;">
+					<span>E</span><span>R</span><span>R</span><span>0</span><span>R</span></h1>
 			</div>
-			<h2 style="font-size: xx-large;font-family: auto;">we are sorry, but the page you requested was not found</h2>
+			<h2 style="font-size: xx-large;font-family: auto;">we are sorry, but the page you requested was not found
+			</h2>
+			<h1>
+				<%= message %>
+			</h1>
+			<h2>
+				<%= error.status %>
+			</h2>
+			<pre><%= error.stack %></pre>
 			<div style="display: flex; justify-content: center;">
-				<a type="button"  class="btn btn-dark" href="/">Home</a>
+				<a type="button" class="btn btn-dark" href="/">Home</a>
 			</div>
-			
+
 		</div>
 	</div>
 

@@ -291,50 +291,70 @@
           </button>
         </p>
         <% if ( user.address) { %>
-          <%for(var j=0; j<user.address.length ;j++){%>
+          <% if ( user.address.length>0) { %>
+            <%for(var j=0; j<user.address.length ;j++){%>
 
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-2 border ">
-              <div class="p-3">
-                <p><b>
-                    <%=user.address[j].name%>
-                  </b> <b class="pl-4 font-weight-normal">
-                    <%=user.address[j].phone%>
-                  </b>
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-2 border ">
+                <div class="p-3">
+                  <p><b>
+                      <%=user.address[j].name%>
+                    </b> <b class="pl-4 font-weight-normal">
+                      <%=user.address[j].phone%>
+                    </b>
 
-                  <a type="button" onclick="addressRemove('<%=user.address[j]._id%>')" style="margin-left: 25px;"
-                    class="text-danger border p-1 float-right">
-                    <b> DELETE</b>
-                  </a>
-                  <a type="button" data-toggle="modal" data-target="#modal<%=user.address[j]._id%>"
-                    aria-expanded="false" aria-controls="collapseExample"
-                    class="text-white btn btn-danger border p-1 float-right">
-                    <b> EDIT</b>
-                  </a>
-                </p>
-                <p>
-                  <%=user.address[j].address%> , <%=user.address[j].city%> ,<%=user.address[j].district%> ,
-                        <%=user.address[j].pincode%>
-                </p>
+                    <a type="button" onclick="addressRemove('<%=user.address[j]._id%>')" style="margin-left: 25px;"
+                      class="text-danger border p-1 float-right">
+                      <b> DELETE</b>
+                    </a>
+                    <a type="button" data-toggle="modal" data-target="#modal<%=user.address[j]._id%>"
+                      aria-expanded="false" aria-controls="collapseExample"
+                      class="text-white btn btn-danger border p-1 float-right">
+                      <b> EDIT</b>
+                    </a>
+                  </p>
+                  <p>
+                    <%=user.address[j].address%> , <%=user.address[j].city%> ,<%=user.address[j].district%> ,
+                          <%=user.address[j].pincode%>
+                  </p>
 
+                </div>
               </div>
-            </div>
 
-            <% }%>
-              <% } else if (!user.address) { %>
-                <div class="col-md-12">
-                  <div class="">
-                    <div class="card-body cart">
-                      <div class="col-sm-12 empty-cart-cls text-center">
-                        <img src="images/map.png" width="150" height="150" class="img-fluid mb-4 mr-3">
-                        <h3><strong>You haven't Added any Address yet!!!</strong></h3>
-                        <h4>Add address to make me happy :)</h4>
-                        <a href="/view-products" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue
-                          shopping</a>
+              <% }%>
+                <% } else{ %>
+                  <div class="col-md-12">
+                    <div class="">
+                      <div class="card-body cart">
+                        <div class="col-sm-12 empty-cart-cls text-center">
+                          <img src="images/map.png" width="150" height="150" class="img-fluid mb-4 mr-3">
+                          <h3><strong>You haven't Added any Address yet!!!</strong></h3>
+                          <h4>Add address to make me happy :)</h4>
+                          <a href="/view-products" class="btn btn-primary cart-btn-transform m-3"
+                            data-abc="true">continue
+                            shopping</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <% }%>
+                  <% }%>
+                    <% } else{ %>
+                      <div class="col-md-12">
+                        <div class="">
+                          <div class="card-body cart">
+                            <div class="col-sm-12 empty-cart-cls text-center">
+                              <img src="images/map.png" width="150" height="150" class="img-fluid mb-4 mr-3">
+                              <h3><strong>You haven't Added any Address yet!!!</strong></h3>
+                              <h4>Add address to make me happy :)</h4>
+                              <a href="/view-products" class="btn btn-primary cart-btn-transform m-3"
+                                data-abc="true">continue
+                                shopping</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <% }%>
+
+
       </div>
 
 
@@ -510,7 +530,7 @@
                     let msg = name + " removed";
                     $('#delete-msg').html(msg);
                     location.assign('/manageAddress')
-                    console.log("removed");
+
                   }
                 });
               }
