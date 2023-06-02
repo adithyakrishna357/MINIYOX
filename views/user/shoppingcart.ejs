@@ -1,3 +1,18 @@
+<style>
+    .mtext-104 {
+        font-family: Poppins-Medium;
+        font-size: 16px;
+        line-height: 2.6;
+    }
+
+    .table-shopping-cart .column-5 {
+        width: 172px;
+        padding-right: 15px;
+        text-align: center;
+        font-size: 16px;
+    }
+</style>
+
 <% if (locals.products.length !==0) { %>
 
     <!-- breadcrumb -->
@@ -43,7 +58,7 @@
                                         <td class="column-4"><button type="button"
                                                 onclick="removeproduct('<%=pro.productsDetails._id%>')"
                                                 class="btn btn-danger">remove</button></td>
-                                        <td class="column-5">
+                                        <td class="column-5" style="text-align: center;">
                                             <div class="wrap-num-product flex-w m-l-auto m-r-0">
                                                 <span type="button"
                                                     onclick="changequality('<%=pro.productsDetails._id%>',-1,'<%=pro.productsDetails.product_price%>','<%=pro.productsDetails.stock%>')"
@@ -176,84 +191,101 @@
                     count = parseInt(count);
 
                     if (count === -1) {
-                        $.ajax({
-                            url: '/change-cart-quality',
-                            data: {
-                                product: proId,
-                                count: count,
-                                quantity: quantity
-                            },
-                            method: 'post',
-                            success: (response) => {
-                                if (response.status === 'removed') {
-                                    location.reload()
-                                }
-                                else {
-                                    document.getElementById(proId).innerHTML = quantity + count;
-                                    let currentquantity = Number(quantity + count)
-                                    Price = Price.replace(/,/g, "")
-                                    Price = Price.replace('₹', '')
-                                    let subTotal = parseInt(Price) * parseInt(currentquantity)
-                                    document.getElementsByClassName(proId)[0].innerText = subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                        if (quantity === 1) {
+                            swal({
+                                title: "Are you sure?",
+                                text: "Do you want to remove from cart?",
+                                icon: "warning",
+                                buttons: ["Cancel", "Remove"],
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                confirmButtonText: "Yes, remove it!",
+                                cancelButtonText: "Cancel",
+                                closeOnConfirm: false,
+                                closeOnCancel: true,
+                            }).then((willRemove) => {
+                                if (willRemove) {
+                                    $.ajax({
+                                        url: '/change-cart-quality',
+                                        data: {
+                                            product: proId,
+                                            count: count,
+                                            quantity: quantity
+                                        },
+                                        method: 'post',
+                                        success: (response) => {
+                                            if (response.status === 'removed') {
+                                                location.reload()
+                                            }
+                                            else {
+                                                document.getElementById(proId).innerHTML = quantity + count;
+                                                let currentquantity = Number(quantity + count)
+                                                Price = Price.replace(/,/g, "")
+                                                Price = Price.replace('₹', '')
+                                                let subTotal = parseInt(Price) * parseInt(currentquantity)
+                                                document.getElementsByClassName(proId)[0].innerText = subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
 
-                                    const values = document.querySelectorAll('.subTotal')
-                                    let totalprice = 0;
-                                    values.forEach(subTotal => {
-                                        let totalvalue = subTotal.innerText;
-                                        totalvalue = totalvalue.replace(/,/g, "")
-                                        totalvalue = totalvalue.replace('₹', '')
-                                        totalprice = totalprice + parseInt(totalvalue)
-                                    })
-                                    document.querySelectorAll('.totalamount').forEach(totalamount => {
-                                        totalamount.innerText = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                                                const values = document.querySelectorAll('.subTotal')
+                                                let totalprice = 0;
+                                                values.forEach(subTotal => {
+                                                    let totalvalue = subTotal.innerText;
+                                                    totalvalue = totalvalue.replace(/,/g, "")
+                                                    totalvalue = totalvalue.replace('₹', '')
+                                                    totalprice = totalprice + parseInt(totalvalue)
+                                                })
+                                                document.querySelectorAll('.totalamount').forEach(totalamount => {
+                                                    totalamount.innerText = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                                                })
+                                            }
+                                        }
                                     })
                                 }
-                            }
-                        })
+                            })
+                        }
                     }
-                    else if (stock < quantity + count) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Oops...',
-                            text: 'out of stock!',
-                        })
-                    }
-                    else {
-                        $.ajax({
-                            url: '/change-cart-quality',
-                            data: {
-                                product: proId,
-                                count: count,
-                                quantity: quantity
-                            },
-                            method: 'post',
-                            success: (response) => {
-                                if (response.status === 'removed') {
-                                    location.reload()
-                                }
-                                else {
-                                    document.getElementById(proId).innerHTML = quantity + count;
-                                    let currentquantity = Number(quantity + count)
-                                    Price = Price.replace(/,/g, "")
-                                    Price = Price.replace('₹', '')
-                                    let subTotal = parseInt(Price) * parseInt(currentquantity)
-                                    document.getElementsByClassName(proId)[0].innerText = subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-                                    const values = document.querySelectorAll('.subTotal')
-                                    let totalprice = 0;
-                                    values.forEach(subTotal => {
-                                        let totalvalue = subTotal.innerText;
-                                        totalvalue = totalvalue.replace(/,/g, "")
-                                        totalvalue = totalvalue.replace('₹', '')
-                                        totalprice = totalprice + parseInt(totalvalue)
-                                    })
-                                    document.querySelectorAll('.totalamount').forEach(totalamount => {
-                                        totalamount.innerText = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                        else if (stock < quantity + count) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Oops...',
+                                text: 'out of stock!',
+                            })
+                        }
+                        else {
+                            $.ajax({
+                                url: '/change-cart-quality',
+                                data: {
+                                    product: proId,
+                                    count: count,
+                                    quantity: quantity
+                                },
+                                method: 'post',
+                                success: (response) => {
+                                    if (response.status === 'removed') {
+                                        location.reload()
+                                    }
+                                    else {
+                                        document.getElementById(proId).innerHTML = quantity + count;
+                                        let currentquantity = Number(quantity + count)
+                                        Price = Price.replace(/,/g, "")
+                                        Price = Price.replace('₹', '')
+                                        let subTotal = parseInt(Price) * parseInt(currentquantity)
+                                        document.getElementsByClassName(proId)[0].innerText = subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                                        const values = document.querySelectorAll('.subTotal')
+                                        let totalprice = 0;
+                                        values.forEach(subTotal => {
+                                            let totalvalue = subTotal.innerText;
+                                            totalvalue = totalvalue.replace(/,/g, "")
+                                            totalvalue = totalvalue.replace('₹', '')
+                                            totalprice = totalprice + parseInt(totalvalue)
+                                        })
+                                        document.querySelectorAll('.totalamount').forEach(totalamount => {
+                                            totalamount.innerText = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
 
-                                    })
+                                        })
 
+                                    }
                                 }
-                            }
-                        })
+                            })
+                        }
                     }
-                }
             </script>

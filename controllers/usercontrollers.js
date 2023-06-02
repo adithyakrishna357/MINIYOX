@@ -630,6 +630,7 @@ module.exports = {
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
         }
+        console.log(user.address,"uuuuuuuuuuuuuuuu");
         res.render('user/manageaddress', { user, userHeader: true, cartcount })
     },
     manageaddaddress: async (req, res) => {
@@ -753,7 +754,14 @@ module.exports = {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
         }
         const wallet = await userhelper.FindOneWallet(userId)
-        res.render('user/mywallet', { user, userHeader: true, cartcount, userDetails, wallet })
+        let walletAmount
+        if (wallet) {
+            walletAmount = wallet.amount
+        }
+        else {
+            walletAmount = 0000
+        }
+        res.render('user/mywallet', { user, userHeader: true, cartcount, userDetails, walletAmount })
     },
     wallettranscations: async (req, res) => {
         const user = req.session.user

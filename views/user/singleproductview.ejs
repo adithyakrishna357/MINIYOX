@@ -1,3 +1,10 @@
+<style>
+    .swal-button.swal-button--confirm {
+        display: none !important;
+    }
+</style>
+
+
 <!-- Product Detail -->
 <div class="bg0 m-t-30 p-b-140" style="margin-top: 92px;">
     <section class="sec-product-detail bg0 p-t-65 p-b-60">
@@ -59,9 +66,9 @@
                                 <del class="mr-2"> ₹ <%=productdetails.product_price%> </del>
 
                                 <strong> ₹ <%=(productdetails.product_price-productdetails.Offer)%> </strong>
-                            <% } else { %>
-                                ₹ <%= productdetails.product_price %>
-                            <% }%>
+                                <% } else { %>
+                                    ₹ <%= productdetails.product_price %>
+                                        <% }%>
                         </span>
 
                         <p class="stext-102 cl3 p-t-23">
@@ -70,7 +77,7 @@
 
                         <!--  -->
                         <div class="p-t-33">
-                            
+
 
                             <div class="flex-w flex-r-m p-b-10">
                                 <div class="size-204 flex-w flex-m respon6-next">
@@ -112,15 +119,21 @@
                 swal({
                     title: "Added to Wishlist",
                     text: "This action cannot be undone.",
-                    icon: "success"
+                    icon: "success",
+                    timer: 1000, // Timer duration in milliseconds (e.g., 3000ms = 3 seconds)
+                    timerProgressBar: true // Show a progress bar for the timer
                 })
             }
             else if (res.data.status === "not success") {
                 swal({
                     title: "Already exist in your wishlist",
                     text: "This action cannot be undone.",
-                    icon: "info"
-                })
+                    icon: "info",
+                    timer: 1000, // Timer duration in milliseconds (e.g., 3000ms = 3 seconds)
+                    timerProgressBar: true // Show a progress bar for the timer
+                });
+
+
             }
         }
         catch (err) {

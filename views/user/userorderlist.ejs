@@ -8,7 +8,7 @@
             <div>
                 <h2 class="content-title card-title">My Orders</h2>
             </div>
-           
+
         </div>
     </div>
 </section>
@@ -108,17 +108,32 @@
             <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
             <script>
                 const changeStatus = async (orderId, status) => {
-
-                    $.ajax({
-                        method: 'post',
-                        url: '/cancel-order',
-                        data: { orderId, status },
-                        success: (response) => {
-                            if (response.status = 'changed') {
-                                location.reload()
-                            }
+                    swal({
+                        title: "Are you sure?",
+                        text: "Do you want to "+ status+" this product",
+                        icon: "warning",
+                        buttons: ["No","Yes"],
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, remove it!",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false,
+                        closeOnCancel: true,
+                    }).then((willRemove) => {
+                        if (willRemove) {
+                            $.ajax({
+                                method: 'post',
+                                url: '/cancel-order',
+                                data: { orderId, status },
+                                success: (response) => {
+                                    if (response.status = 'changed') {
+                                        location.reload()
+                                    }
+                                }
+                            })
                         }
                     })
+
                 }
             </script>
             <script>
