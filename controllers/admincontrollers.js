@@ -305,6 +305,7 @@ module.exports = {
             const result = await cloudinary.uploader.upload(req.file.path);
             adminhelper.AddBanner(req.body, (id) => {
                 adminhelper.UpdateBannerImages(id, result.url).then((response) => {
+                    console.log(response,"PPPPPPPP");
                     res.redirect('/admin/bannerview')
                 })
             })

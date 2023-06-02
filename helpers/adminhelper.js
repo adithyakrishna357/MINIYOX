@@ -4,6 +4,7 @@ const { ObjectId } = require('mongodb');
 const objectId = require('mongodb-legacy').ObjectId;
 const moment = require('moment');
 const { v4: uuidv4 } = require('uuid');
+const { response } = require('../app');
 
 
 
@@ -249,6 +250,8 @@ module.exports = {
                         {
                             image: bannerUrl
                         }
+                    }).then((response)=>{
+                        resolve(response)
                     })
         })
     },
