@@ -323,8 +323,8 @@ module.exports = {
     DeleteCart: async (userId) => {
         const result = await db.get().collection(collection.CART_COLLECTION).deleteOne({ user: new ObjectId(userId) })
     },
-    OrderListGet: () => {
-        const orders = db.get().collection(collection.ORDER_COLLECTION).find().sort({ date: -1 }).toArray()
+    OrderListGet: (userid) => {
+        const orders = db.get().collection(collection.ORDER_COLLECTION).find({userId : new ObjectId(userid)}).sort({ date: -1 }).toArray()
         return orders
     },
     OrderProductAndQuantity: async (orderId) => {

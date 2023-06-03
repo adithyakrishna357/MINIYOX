@@ -430,7 +430,7 @@ module.exports = {
         try {
             const user = req.session.user;
             const orderClass = 'active'
-            const orders = await userhelper.OrderListGet()
+            const orders = await userhelper.OrderListGet(user._id)
             for (let i = 0; i < orders.length; i++) {
                 orders[i].date = orders[i].date.toLocaleString()
             }
@@ -646,12 +646,10 @@ module.exports = {
     editaddress: async (req, res) => {
         const userId = req.session.user._id
         const addressId = req.params.id
-
         try {
             await userhelper.EditAddress(req.body, userId, addressId).then(() => {
                 res.redirect('/manageaddress')
             })
-
         }
         catch (err) {
             console.log(err);
