@@ -242,14 +242,6 @@
                                 }
                             })
                         }
-                    }
-                        else if (stock < quantity + count) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Oops...',
-                                text: 'out of stock!',
-                            })
-                        }
                         else {
                             $.ajax({
                                 url: '/change-cart-quality',
@@ -270,6 +262,7 @@
                                         Price = Price.replace('₹', '')
                                         let subTotal = parseInt(Price) * parseInt(currentquantity)
                                         document.getElementsByClassName(proId)[0].innerText = subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+
                                         const values = document.querySelectorAll('.subTotal')
                                         let totalprice = 0;
                                         values.forEach(subTotal => {
@@ -280,12 +273,55 @@
                                         })
                                         document.querySelectorAll('.totalamount').forEach(totalamount => {
                                             totalamount.innerText = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-
                                         })
-
                                     }
                                 }
                             })
                         }
                     }
+                    else if (stock < quantity + count) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Oops...',
+                            text: 'out of stock!',
+                        })
+                    }
+                    else {
+                        $.ajax({
+                            url: '/change-cart-quality',
+                            data: {
+                                product: proId,
+                                count: count,
+                                quantity: quantity
+                            },
+                            method: 'post',
+                            success: (response) => {
+                                if (response.status === 'removed') {
+                                    location.reload()
+                                }
+                                else {
+                                    document.getElementById(proId).innerHTML = quantity + count;
+                                    let currentquantity = Number(quantity + count)
+                                    Price = Price.replace(/,/g, "")
+                                    Price = Price.replace('₹', '')
+                                    let subTotal = parseInt(Price) * parseInt(currentquantity)
+                                    document.getElementsByClassName(proId)[0].innerText = subTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+                                    const values = document.querySelectorAll('.subTotal')
+                                    let totalprice = 0;
+                                    values.forEach(subTotal => {
+                                        let totalvalue = subTotal.innerText;
+                                        totalvalue = totalvalue.replace(/,/g, "")
+                                        totalvalue = totalvalue.replace('₹', '')
+                                        totalprice = totalprice + parseInt(totalvalue)
+                                    })
+                                    document.querySelectorAll('.totalamount').forEach(totalamount => {
+                                        totalamount.innerText = totalprice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
+
+                                    })
+
+                                }
+                            }
+                        })
+                    }
+                }
             </script>
