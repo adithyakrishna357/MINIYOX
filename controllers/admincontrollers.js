@@ -21,14 +21,14 @@ module.exports = {
             const total = totalRevenue[0]?.total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             const startMonthDate = new Date(new Date().getFullYear(), new Date().getMonth())
             const endMonthDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1)
-            
+
             let monthlyAmount = await adminhelper.MontlySales(startMonthDate, endMonthDate)
             if (monthlyAmount[0]) {
                 monthlyAmount = monthlyAmount[0].total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             } else {
                 monthlyAmount = "₹000"
             }
-            res.render("admin/adminhomepage", { admin: true, layout: 'adminLayout', categorycount, productsCount, orderCount, total,monthlyAmount });
+            res.render("admin/adminhomepage", { admin: true, layout: 'adminLayout', categorycount, productsCount, orderCount, total, monthlyAmount });
         } else {
             res.redirect('/admin/login');
         }
@@ -112,7 +112,10 @@ module.exports = {
     editproductget: (req, res) => {
         producthelper.GetEditProduct(req.params.id).then((product) => {
             categoryhelper.AdminProductCategory().then((categorie) => {
-                res.render('admin/editproduct', { admin: true, product, categorie, layout: 'adminLayout' })
+                producthelper.GetEditProductCategory(product.product_category).then((productcategory) => {
+                    console.log(productcategory,"LLLLLLLLLLLLL");
+                    res.render('admin/editproduct', { admin: true, product, categorie,productcategory, layout: 'adminLayout' })
+                })
             })
         })
     },
@@ -127,13 +130,13 @@ module.exports = {
                 }
             }
             producthelper.PostEditProduct(req.body, req.params.id).then(() => {
-                if(imgUrl){
-                    if (imgUrl.length>0) {
+                if (imgUrl) {
+                    if (imgUrl.length > 0) {
                         producthelper.AddProduct_Img(req.params.id, imgUrl).then((response) => {
                         })
                     }
                 }
-                
+
                 res.redirect('/admin/adminproductview');
 
             })
@@ -210,13 +213,13 @@ module.exports = {
                     await userhelper.UpdateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
-                    await adminhelper.WalletTransAdd(userId,"cancelation",amount)
+                    await adminhelper.WalletTransAdd(userId, "cancelation", amount)
                 }
                 else {
                     await userhelper.CreateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
-                    await adminhelper.WalletTransAdd(userId,"cancelation",amount)
+                    await adminhelper.WalletTransAdd(userId, "cancelation", amount)
                 }
 
             }
@@ -228,13 +231,13 @@ module.exports = {
                     await userhelper.UpdateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
-                    await adminhelper.WalletTransAdd(userId,"returned",amount)
+                    await adminhelper.WalletTransAdd(userId, "returned", amount)
                 }
                 else {
                     await userhelper.CreateWallet(userId, amount)
                     await adminhelper.OrderStatusChange(orderId, status)
                     await adminhelper.PaymentStatusChange(orderId, 'refund')
-                    await adminhelper.WalletTransAdd(userId,"returned",amount)
+                    await adminhelper.WalletTransAdd(userId, "returned", amount)
                 }
             }
             else {
@@ -259,11 +262,10 @@ module.exports = {
             orders[i].GrandTotal = orders[i].GrandTotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].productsDetails.product_price = orders[i].productsDetails.product_price.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             orders[i].subtotal = orders[i].subtotal.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
-            if(orders[i].discount){
+            if (orders[i].discount) {
                 orders[i].discount = orders[i].discount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
             }
             orders[i].date = orders[i].date.toLocaleString()
-
         }
         total = total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })
         res.render('admin/orderdetails', { admin: true, layout: 'adminLayout', total, orders, orderClass })
@@ -305,7 +307,7 @@ module.exports = {
             const result = await cloudinary.uploader.upload(req.file.path);
             adminhelper.AddBanner(req.body, (id) => {
                 adminhelper.UpdateBannerImages(id, result.url).then((response) => {
-                    console.log(response,"PPPPPPPP");
+                    console.log(response, "PPPPPPPP");
                     res.redirect('/admin/bannerview')
                 })
             })
@@ -329,62 +331,62 @@ module.exports = {
             res.redirect('/admin/bannerview')
         })
     },
-    graphstatics:async(req,res)=>{
+    graphstatics: async (req, res) => {
         const OrderStatistics = await adminhelper.GetOrderStatics()
-        const delivers  = await adminhelper.GetSaleStatics()
-        res.json({OrderStatistics,delivers})
+        const delivers = await adminhelper.GetSaleStatics()
+        res.json({ OrderStatistics, delivers })
     },
-    salesreport:(req,res)=>{
-        adminhelper.GetAllSales().then((orders)=>{
-            const months = ["JAN","FEB","MARCH","APRIL","MAY","JUNE","JULY","AUG","SEP","OCT","NOV","DEC"];
-            for(let i=0;i<orders.length;i++){
-                orders[i].date = orders[i].date.getDate()+'-'+months[orders[i].date.getMonth()]+'-'+orders[i].date.getFullYear();
-                if(!orders[i].discount){
+    salesreport: (req, res) => {
+        adminhelper.GetAllSales().then((orders) => {
+            const months = ["JAN", "FEB", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            for (let i = 0; i < orders.length; i++) {
+                orders[i].date = orders[i].date.getDate() + '-' + months[orders[i].date.getMonth()] + '-' + orders[i].date.getFullYear();
+                if (!orders[i].discount) {
                     orders[i].discount = 000
                 }
             }
-            res.render('admin/salesreport',{admin: true,layout: 'adminLayout',orders})
+            res.render('admin/salesreport', { admin: true, layout: 'adminLayout', orders })
         })
     },
-    editbanner:(req,res)=>{
+    editbanner: (req, res) => {
         const bannerId = req.params.id;
-        adminhelper.GetEditBanner(bannerId).then((banner)=>{
-            res.render('admin/editbanner',{admin: true,layout: 'adminLayout',banner})
+        adminhelper.GetEditBanner(bannerId).then((banner) => {
+            res.render('admin/editbanner', { admin: true, layout: 'adminLayout', banner })
         })
     },
-    editbannerpost:async(req,res)=>{
+    editbannerpost: async (req, res) => {
         try {
-            const banner =req.body;
+            const banner = req.body;
             let result
-            if(req.file){
+            if (req.file) {
                 result = await cloudinary.uploader.upload(req.file.path);
             }
-            adminhelper.EditBannerPost(banner,req.params.id)
-            if(result){
+            adminhelper.EditBannerPost(banner, req.params.id)
+            if (result) {
                 adminhelper.UpdateBannerImages(req.params.id, result.url)
             }
-                res.redirect('/admin/bannerview')
+            res.redirect('/admin/bannerview')
         }
         catch (err) {
             res.redirect('/admin/bannerview')
         }
     },
-    salesreportfiler:async(req,res)=>{
-        try{
-            const {startDate,endDate}= req.body;
-            
-            const orders = await adminhelper.salesreportfilterpost(startDate,endDate);
-            
-            const months = ["JAN","FEB","MARCH","APRIL","MAY","JUNE","JULY","AUG","SEP","OCT","NOV","DEC"];
-            for(let i=0;i<orders.length;i++){
-                orders[i].date = orders[i].date.getDate()+'-'+months[orders[i].date.getMonth()]+'-'+orders[i].date.getFullYear();
-                if(!orders[i].discount){
+    salesreportfiler: async (req, res) => {
+        try {
+            const { startDate, endDate } = req.body;
+
+            const orders = await adminhelper.salesreportfilterpost(startDate, endDate);
+
+            const months = ["JAN", "FEB", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            for (let i = 0; i < orders.length; i++) {
+                orders[i].date = orders[i].date.getDate() + '-' + months[orders[i].date.getMonth()] + '-' + orders[i].date.getFullYear();
+                if (!orders[i].discount) {
                     orders[i].discount = 000
                 }
             }
-            res.render('admin/salesreportfilter',{admin: true,layout: 'adminLayout',orders})
+            res.render('admin/salesreportfilter', { admin: true, layout: 'adminLayout', orders })
         }
-        catch(err){
+        catch (err) {
             console.log(err);
         }
     }

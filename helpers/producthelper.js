@@ -71,7 +71,7 @@ module.exports = {
                     product_description: productData.product_description,
                     product_category: productData.product_category,
                     product_price: productData.product_price,
-                    Offer:productData.Offer,
+                    Offer: productData.Offer,
                     stock: productData.stock
                 }
             })
@@ -107,7 +107,7 @@ module.exports = {
                 })
         })
     },
-    GetFilteredPro: async (currentPage,filter) => {
+    GetFilteredPro: async (currentPage, filter) => {
         currentPage = parseInt(currentPage);
         const limit = 8;
         const skip = (currentPage - 1) * limit;
@@ -177,5 +177,23 @@ module.exports = {
             .find({ productstatus: true }).sort({ product_price: filter }).toArray();
         return products;
     },
-    
+    GetEditProductCategory: (categoryId) => {
+        return new Promise((resolve, reject) => {
+            try {
+                db.get()
+                    .collection(collection.PRODUCT_CATEGORY)
+                    .find({ _id: new ObjectId(categoryId) })
+                    .toArray()
+                    .then((category) => {
+                        resolve(category);
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            } catch (err) {
+                reject(err);
+            }
+        });
+    }
+
 }

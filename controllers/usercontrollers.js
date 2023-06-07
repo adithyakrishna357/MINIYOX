@@ -612,7 +612,6 @@ module.exports = {
                     message: "payment failed"
                 })
             }
-
         } catch (error) {
             console.log(error);
             next(error)
@@ -631,7 +630,6 @@ module.exports = {
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
         }
-        console.log(user.address,"uuuuuuuuuuuuuuuu");
         res.render('user/manageaddress', { user, userHeader: true, cartcount })
     },
     manageaddaddress: async (req, res) => {
@@ -764,7 +762,6 @@ module.exports = {
     },
     wallettranscations: async (req, res) => {
         const user = req.session.user
-        // console.log(user);
         let cartcount = null;
         if (req.session.user) {
             cartcount = await userhelper.GetCartCount(req.session.user._id)
@@ -778,7 +775,6 @@ module.exports = {
             const formattedDate = `${day < 10 ? '0' + day : day}-${month < 10 ? '0' + month : month}-${year}`;
             wallet[0].transactions[i].date = formattedDate;
         }
-          console.log(wallet,"wwwwwwwwwwwwww");
         res.render('user/wallettable', { user, userHeader: true,cartcount,wallet })
     }
 }

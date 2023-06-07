@@ -222,7 +222,6 @@ module.exports = {
                             resolve();
                         })
             }
-
         })
     },
     DeleteCoupon: (couponId) => {
@@ -359,7 +358,6 @@ module.exports = {
                         count: { $sum: 1 },
                     }
                 }
-
             ]).toArray()
             resolve(orderStatistics)
         })
@@ -396,7 +394,6 @@ module.exports = {
                         }
                     }
                 ]).toArray()
-            console.log("orders", orders);
             resolve(orders)
         })
     },

@@ -25,7 +25,7 @@
                             <div class="mb-4">
                                 <label class="form-label">Category</label>
                                 <select class="form-select"   required name="product_category">
-                                    <option selected disabled ><%=product.product_category%></option>
+                                    <option selected disabled ><%=productcategory[0].category_list%></option>
                                     <% for (var i=0; i < categorie.length; i++) { %>
                                         <% if (categorie[i].categorystatus) { %>
                                             <option value="<%= categorie[i]._id %>">
