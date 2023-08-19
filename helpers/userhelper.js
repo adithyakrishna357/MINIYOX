@@ -27,7 +27,7 @@ module.exports = {
                 userData.password = await bcrypt.hash(userData.password, 10);
                 db.get().collection(collection.USER_COLLECTION).insertOne(userData).then(async (data) => {
                     dataDoc = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: data.insertedId });
-                    resolve({ status: true, dataDoc });
+                    resolve({ status: true, dataDoc ,message:''});
                 })
             }
         })

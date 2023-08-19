@@ -19,6 +19,7 @@ module.exports = {
             
             console.log(response);
             if (response.status) {
+                messaGe=''
                 req.session.userId = response._id;
                 req.session.loggedIn = true;
                 req.session.user = response.dataDoc;
@@ -79,6 +80,7 @@ module.exports = {
         res.render('user/index', { userHeader: true, user, cartcount, banner })
     },
     signuprender: (req, res) => {
+        
         res.render('user/userSignup', { userHeader: false, messaGe });
     },
     getviewproducts: async (req, res) => {
@@ -307,7 +309,7 @@ module.exports = {
             walletAmount = wallet.amount
         }
         else {
-            walletAmount = 0000
+            walletAmount = 0
         }
         res.render('user/checkoutpage', { user, userHeader: true, cartcount, products, totalprice, address, walletAmount })
     },
@@ -756,7 +758,7 @@ module.exports = {
             walletAmount = wallet.amount
         }
         else {
-            walletAmount = 0000
+            walletAmount = 0
         }
         res.render('user/mywallet', { user, userHeader: true, cartcount, userDetails, walletAmount })
     },
