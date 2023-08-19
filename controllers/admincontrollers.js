@@ -340,11 +340,15 @@ module.exports = {
         adminhelper.GetAllSales().then((orders) => {
             const months = ["JAN", "FEB", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUG", "SEP", "OCT", "NOV", "DEC"];
             for (let i = 0; i < orders.length; i++) {
+                
                 orders[i].date = orders[i].date.getDate() + '-' + months[orders[i].date.getMonth()] + '-' + orders[i].date.getFullYear();
                 if (!orders[i].discount) {
-                    orders[i].discount = 000
+                    orders[i].discount = 0
                 }
+                console.log(orders.userDetails,"orrrrrrrrrrrrrrr");
             }
+
+            
             res.render('admin/salesreport', { admin: true, layout: 'adminLayout', orders })
         })
     },
@@ -381,7 +385,7 @@ module.exports = {
             for (let i = 0; i < orders.length; i++) {
                 orders[i].date = orders[i].date.getDate() + '-' + months[orders[i].date.getMonth()] + '-' + orders[i].date.getFullYear();
                 if (!orders[i].discount) {
-                    orders[i].discount = 000
+                    orders[i].discount = 0
                 }
             }
             res.render('admin/salesreportfilter', { admin: true, layout: 'adminLayout', orders })
